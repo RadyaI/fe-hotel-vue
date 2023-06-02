@@ -55,7 +55,7 @@
                 </div>
             </div>
 
-            <div class="hotel_booking_area position">
+            <div class="hotel_booking_area position" style="position: relative;">
                 <div class="container">
                     <div class="hotel_booking_table">
                         <div class="col-md-3">
@@ -132,7 +132,7 @@
                             <h5>Rp.{{ room.harga }}<small>/night</small></h5>
                             <a href="#" class="btn btn-warning text-light"
                                 style="text-transform: uppercase; font-weight: bold;" data-bs-toggle="modal"
-                                data-bs-target="#BookModal">Book Now</a>
+                                data-bs-target="#BookModal" @click="getDetailRoom(room)">Book Now</a>
                         </div>
                     </div>
                 </div>
@@ -462,19 +462,67 @@
 
         <!-- BookModal -->
         <div class="modal fade" id="BookModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Book Now</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
-                        ...
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
+                    <form @submit.prevent="Booking">
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="hotel_img">
+                                        <img :src="'http://localhost/UKL-Hotel/HotelLaravel_9/public/images/' + roomDetail.foto"
+                                            alt="" height="300" weight="450">
+                                    </div>
+                                </div>
+                                <div class="col">
+
+                                    <h3>{{ roomDetail.harga }} / Night</h3>
+
+                                    <label for="email">Email: </label>
+                                    <input type="email" v-model="bookData.email" autocomplete="off" class="form-control"
+                                        required placeholder="Masukkan email...">
+
+                                    <label for="name">Nama: </label>
+                                    <input type="text" v-model="bookData.nama_tamu" class="form-control"
+                                        placeholder="Masukkan nama..." required autocomplete="off">
+
+                                    <div class="row mt-3">
+                                        <div class="col">
+                                            <label for="checkin">Check-in:</label>
+                                            <input type="date" class="form-control" @change="hitungTotalHarga" required
+                                                v-model="filter.checkin">
+                                        </div>
+                                        <div class="col">
+                                            <label for="checkout">Check-out:</label>
+                                            <input type="date" class="form-control" @change="hitungTotalHarga" required
+                                                v-model="filter.checkout">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col">
+                                            <label for="jumlah">Jumlah kamar: </label>
+                                            <input type="number" class="form-control" @change="hitungTotalHarga" required
+                                                placeholder="Jumlah kamar..." v-model="bookData.jumlah_kamar">
+                                        </div>
+                                        <div class="col">
+                                            <input type="hidden" v-model="roomDetail.harga" @change="hitungTotalHarga">
+                                            <label for="harga">Total harga:</label>
+                                            <input type="number" class="form-control" v-model="bookData.harga">
+                                            <small v-if="this.bookData.harga < 0" style="color: red;">*Masukkan data dengan
+                                                benar</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Booking</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -483,13 +531,19 @@
 </template>
 <script>
 import axios from 'axios'
-// import swal from 'sweetalert'
+import moment from 'moment'
+import swal from 'sweetalert'
 
 export default {
     name: 'app',
     data() {
         return {
             roomData: {},
+            bookData: {
+                jumlah_kamar: 0,
+                harga: 0,
+            },
+            roomDetail: {},
             filter: {
                 checkin: '',
                 checkout: '',
@@ -505,6 +559,7 @@ export default {
     },
     methods: {
         getRoom() {
+            // axios.get('http://localhost:8000/api/filterKamar/1-2')
             axios.get('http://localhost:8000/api/filterKamar/' + this.filter.person)
                 .then(
                     (response) => {
@@ -512,6 +567,78 @@ export default {
                         this.roomData = response.data
                     }
                 )
+        },
+        getDetailRoom(room) {
+            axios.get('http://localhost:8000/api/getkamar/' + room.id_kamar)
+                .then(
+                    (response) => {
+                        console.log(response)
+                        this.roomDetail = response.data[0]
+                    }
+                )
+        },
+        hitungTotalHarga() {
+            const start = moment(this.filter.checkin)
+            const end = moment(this.filter.checkout)
+            const duration = moment.duration(end.diff(start))
+            const night = duration.asDays()
+            const total = night * this.bookData.jumlah_kamar * this.roomDetail.harga
+            this.bookData.harga = total
+        },
+        Booking() {
+
+            let data = {
+                nama_tamu: this.bookData.nama_tamu,
+                email: this.bookData.email,
+                checkin: this.filter.checkin,
+                checkout: this.filter.checkout,
+                id_kamar: this.roomDetail.id_kamar,
+                jumlah_kamar: this.bookData.jumlah_kamar,
+                harga: this.bookData.harga
+
+            }
+
+            swal({
+                title: 'Booking sekarang?',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true
+            }).then(
+                (booking) => {
+                    if (booking) {
+                        swal({ title: 'Wait a second', button: false })
+                        axios.post('http://localhost:8000/api/createtransaksi', data)
+                            .then(
+                                (response) => {
+                                    console.log(response)
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Successful booking, details have been sent to the email',
+                                        dangerMode: true,
+                                        button: 'Close',
+                                    }).then(
+                                        (close) => {
+                                            if (close) {
+                                                location.reload()
+                                            }
+                                        }
+                                    )
+                                }
+                            )
+                            .catch(
+                                (error) => {
+                                    console.log(error.response)
+                                    if (error.response.status === 500) {
+                                        swal({
+                                            icon: 'error',
+                                            title: 'Booking failed'
+                                        })
+                                    }
+                                }
+                            )
+                    }
+                }
+            )
         }
     }
 }
