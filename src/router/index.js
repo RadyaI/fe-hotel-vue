@@ -5,6 +5,7 @@ import VueRouter from 'vue-router'
 import DashboardPublic from '../views/public/Dashboard.vue'
 import Check from '../views/public/Check.vue'
 import Feedback from '../views/public/Feedback.vue'
+import Notfound from '../views/idk_page/Notfound.vue'
 
 Vue.use(VueRouter)
 
@@ -21,8 +22,15 @@ const routes = [
   {
     path: '/feedback',
     component: Feedback
-  }
+  },
   // =======> Public Route <=======
+
+  // =======> Special Route <========
+  {
+    path: '*',
+    component: Notfound
+  },
+  // =======> Special Route <========
 ]
 
 const router = new VueRouter({
