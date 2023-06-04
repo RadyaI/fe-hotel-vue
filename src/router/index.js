@@ -6,6 +6,7 @@ import DashboardPublic from '../views/public/Dashboard.vue'
 import Check from '../views/public/Check.vue'
 import Feedback from '../views/public/Feedback.vue'
 import Notfound from '../views/idk_page/Notfound.vue'
+import Print from '../views/public/Print.vue'
 
 Vue.use(VueRouter)
 
@@ -23,14 +24,18 @@ const routes = [
     path: '/feedback',
     component: Feedback
   },
-  // =======> Public Route <=======
+  {
+    path: '/print/:nama',
+    component: Print
+  },
+  // =======> Public Route End <=======
 
   // =======> Special Route <========
   {
     path: '*',
     component: Notfound
   },
-  // =======> Special Route <========
+  // =======> Special Route End <========
 ]
 
 const router = new VueRouter({

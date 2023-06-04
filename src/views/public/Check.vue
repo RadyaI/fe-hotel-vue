@@ -136,7 +136,7 @@ p {
                     <h5 class="card-title">Atas nama <b>{{ data.nama_tamu }}</b> / ID Booking <b>{{ data.id_transaksi }}</b>
                     </h5>
                     <!-- <p class="card-text" style="color:black;">With supporting text below as a natural lead-in to additional content.</p> -->
-                    <a :href="'/printbukti/' + data.id_transaksi" class="text-primary"
+                    <a :href="'/print/' + data.nama_tamu" class="text-primary"
                         style="text-decoration: underline;">Print Bukti</a>
                 </div>
             </div>
