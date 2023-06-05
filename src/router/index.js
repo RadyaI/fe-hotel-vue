@@ -8,6 +8,12 @@ import Feedback from '../views/public/Feedback.vue'
 import Notfound from '../views/idk_page/Notfound.vue'
 import Print from '../views/public/Print.vue'
 
+// Resepsionis
+import ResepConfirm from '../views/resepsionis/Confirm.vue'
+import Checkin from '../views/resepsionis/Checkin.vue'
+import Checkout from '../views/resepsionis/Checkout.vue'
+import history from '../views/resepsionis/History.vue'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -29,6 +35,25 @@ const routes = [
     component: Print
   },
   // =======> Public Route End <=======
+
+  // =======> Resepsionis Route <=======
+  {
+    path: '/resepsionis',
+    component: ResepConfirm
+  },
+  {
+    path: 'checkin',
+    component: Checkin
+  },
+  {
+    path: 'checkout',
+    component: Checkout
+  }, 
+  {
+    path: 'history',
+    component: history
+  },
+  // =======> Resepsionis Route End <=======
 
   // =======> Special Route <========
   {
