@@ -42,15 +42,15 @@ const routes = [
     component: ResepConfirm
   },
   {
-    path: 'checkin',
+    path: '/checkin',
     component: Checkin
   },
   {
-    path: 'checkout',
+    path: '/checkout',
     component: Checkout
   }, 
   {
-    path: 'history',
+    path: '/history',
     component: history
   },
   // =======> Resepsionis Route End <=======

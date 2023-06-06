@@ -257,7 +257,7 @@ export default {
                 title: 'Want to confirm payment?',
                 icon: 'warning',
                 dangerMode: true,
-                buttons: ['Tidak', 'Iya']
+                buttons: ['No', 'Yes']
             }).then(
                 (konfirmasi) => {
                     if (konfirmasi) {
