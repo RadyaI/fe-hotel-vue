@@ -42,16 +42,16 @@
         </section>
         <!--================Breadcrumb Area =================-->
 
-        <!--===============> Not Confirm data area <===============-->
+        <!--===============> Ongoing data area <===============-->
         <section class="about_history_area section_gap" style="margin-top: -5pc;">
             <div class="container">
-                <div class="card mb-4" v-for="i in checkinData" :key="i.id_transaksi">
+                <div class="card mb-4" v-for="i in ongoingData" :key="i.id_transaksi">
                     <div class="card-header">
                         Tanggal pesan / {{ i.tgl_pesan }}
                     </div>
                     <div class="card-body">
                         <h5 class="card-title">Atas nama <b style="color: blue;">{{ i.nama_tamu }}</b></h5>
-                        <p class="card-text text-light badge-success badge">Payment has been confirmed</p> <br>
+                        <p class="card-text text-light badge-danger badge">In use</p> <br>
                         <button class="button" @click="getDetailBooking(i)" data-bs-toggle="modal"
                             data-bs-target="#confirmDetail"> Detail
                         </button>
@@ -59,7 +59,7 @@
                 </div>
             </div>
         </section>
-        <!--===============> Not Confirm data area <===============-->
+        <!--===============> Ongoing data area <===============-->
 
         <!--================ start footer Area  =================-->
         <footer class="footer-area section_gap">
@@ -201,23 +201,10 @@
                                 <input type="number" class="form-control" readonly v-model="detailData.total_harga">
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col">
-                                <label for="kamar">No Kamar:</label>
-                                <input type="number" class="form-control" v-model="nomorKamar" required
-                                    placeholder="Masukkan nomor kamar..." autocomplete="off">
-                            </div>
-                            <div class="col">
-                                <input type="hidden" class="form-control">
-                            </div>
-                            <div class="col">
-                                <input type="hidden" class="form-control">
-                            </div>
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="button">Check-In</button>
+                        <button type="submit" class="button" @click="checkOut">Check-Out</button>
                     </div>
                 </div>
             </div>
@@ -229,22 +216,30 @@
 
 <script>
 import axios from 'axios'
-// import swal from 'sweetalert'
-// import swal from 'sweetalert'
+import swal from 'sweetalert'
 
 export default {
     name: 'App',
     data() {
         return {
-            checkinData: {},
+            ongoingData: {},
             detailData: {},
             nomorKamar: ''
         }
     },
     mounted() {
+        this.getOngoing()
     },
     methods: {
-
+        getOngoing() {
+            axios.get('http://localhost:8000/api/ongoing')
+                .then(
+                    (res) => {
+                        console.log(res)
+                        this.ongoingData = res.data
+                    }
+                )
+        },
         getDetailBooking(i) {
             axios.get('http://localhost:8000/api/gettransaksibyid/' + i.id_transaksi)
                 .then(
@@ -254,7 +249,51 @@ export default {
                     }
                 )
         },
-        
+        checkOut() {
+            let id = this.detailData.id_transaksi
+            let id_kamar = this.detailData.id_kamar
+            swal({
+                icon: 'warning',
+                title: 'Are you sure?',
+                dangerMode: true,
+                buttons: ['No', 'Yes']
+            }).then(
+                (checkout) => {
+                    if (checkout) {
+                        axios.put(`http://localhost:8000/api/checkout/${id}/${id_kamar}`)
+                            .then(
+                                (res) => {
+                                    console.log(res)
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Check-Out Successfull',
+                                        button: 'close',
+                                        dangerMode: true
+                                    }).then(
+                                        (close) => {
+                                            if (close) {
+                                                location.reload()
+                                            }
+                                        }
+                                    )
+                                }
+                            )
+                            .catch(
+                                (error) => {
+                                    console.log(error)
+                                    if (error.response.status === 500) {
+                                        let title = error.response.data.message
+                                        swal({
+                                            title: `${title}`,
+                                            icon: 'error'
+                                        })
+                                    }
+                                }
+                            )
+                    }
+                }
+            )
+        }
     }
 }
 </script>
