@@ -20,6 +20,7 @@
                             <li class="nav-item"><a class="nav-link" href="/checkin">CheckIn</a></li>
                             <li class="nav-item"><a class="nav-link" href="/checkout">Checkout</a></li>
                             <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#" @click="logout">LogOut</a></li>
                         </ul>
                     </div>
                 </nav>
@@ -229,12 +230,66 @@ export default {
         this.getConfirm()
     },
     methods: {
+        logout() {
+            swal({
+                icon: 'warning',
+                title: 'Are you sure?',
+                buttons: ['Nooo', 'Yes Yes'],
+                dangerMode: true
+            }).then(
+                (logout) => {
+                    if (logout) {
+                        localStorage.removeItem('token')
+                        localStorage.removeItem('role')
+                        localStorage.removeItem('id')
+                        swal({
+                            icon: 'success',
+                            title: 'Logout successful',
+                            dangerMode: true,
+                            button: 'Login'
+                        }).then(
+                            (login) => {
+                                if (login) {
+                                    location.href = '/login'
+                                }
+                            }
+                        )
+                    }
+                }
+            )
+        },
+        auth() {
+            axios.defaults.headers.common["Authorization"] = 'bearer' + localStorage.getItem('token')
+        },
         getConfirm() {
+            this.auth()
             axios.get('http://localhost:8000/api/notconfirmed')
                 .then(
                     (res) => {
                         console.log(res.data)
                         this.confirmData = res.data
+                    }
+                )
+                .catch(
+                    (error) => {
+                        console.log(error)
+                        if (error.response.status === 401) {
+                            let title = error.response.statusText
+                            let text = error.response.data.status
+                            swal({
+                                icon: 'error',
+                                title: `${title}`,
+                                text: `${text}`,
+                                dangerMode: true,
+                                button: 'Login'
+                            }).then(
+                                (login) => {
+                                    if (login) {
+                                        location.href = '/login'
+                                    }
+                                }
+                            )
+                        }
                     }
                 )
         },

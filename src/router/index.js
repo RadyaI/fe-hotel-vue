@@ -7,6 +7,7 @@ import Check from '../views/public/Check.vue'
 import Feedback from '../views/public/Feedback.vue'
 import Notfound from '../views/idk_page/Notfound.vue'
 import Print from '../views/public/Print.vue'
+import Login from '../views/Login.vue'
 
 // Resepsionis
 import ResepConfirm from '../views/resepsionis/Confirm.vue'
@@ -33,6 +34,10 @@ const routes = [
   {
     path: '/print/:nama',
     component: Print
+  },
+  {
+    path: '/login',
+    component: Login
   },
   // =======> Public Route End <=======
 
