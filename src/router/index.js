@@ -6,6 +6,7 @@ import DashboardPublic from '../views/public/Dashboard.vue'
 import Check from '../views/public/Check.vue'
 import Feedback from '../views/public/Feedback.vue'
 import Notfound from '../views/idk_page/Notfound.vue'
+import unauthorized from '../views/idk_page/unauthorized.vue'
 import Print from '../views/public/Print.vue'
 import Login from '../views/Login.vue'
 
@@ -44,19 +45,35 @@ const routes = [
   // =======> Resepsionis Route <=======
   {
     path: '/resepsionis',
-    component: ResepConfirm
+    component: ResepConfirm,
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['resepsionis']
+    }
   },
   {
     path: '/checkin',
-    component: Checkin
+    component: Checkin,
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['resepsionis']
+    }
   },
   {
     path: '/checkout',
-    component: Checkout
-  }, 
+    component: Checkout,
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['resepsionis']
+    }
+  },
   {
     path: '/history',
-    component: history
+    component: history,
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['resepsionis']
+    }
   },
   // =======> Resepsionis Route End <=======
 
@@ -64,6 +81,10 @@ const routes = [
   {
     path: '*',
     component: Notfound
+  },
+  {
+    path: '/lol',
+    component: unauthorized
   },
   // =======> Special Route End <========
 ]
@@ -75,3 +96,21 @@ const router = new VueRouter({
 })
 
 export default router
+
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token')
+  const role = localStorage.getItem('role')
+
+  if (to.meta.requiresAuth && !token) {
+    next({
+      path: '/login'
+    })
+  } else if (to.meta.allowedRoles && !to.meta.allowedRoles.includes(role)) {
+    next({
+      path: '/lol'
+    })
+  } else {
+    next()
+  }
+
+})
