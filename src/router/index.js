@@ -10,6 +10,9 @@ import unauthorized from '../views/idk_page/unauthorized.vue'
 import Print from '../views/public/Print.vue'
 import Login from '../views/Login.vue'
 
+// Admin
+import manageUser from '../views/admin/manageUser.vue'
+
 // Resepsionis
 import ResepConfirm from '../views/resepsionis/Confirm.vue'
 import Checkin from '../views/resepsionis/Checkin.vue'
@@ -41,6 +44,17 @@ const routes = [
     component: Login
   },
   // =======> Public Route End <=======
+
+  // =======> Admin Route <=======
+  {
+    path: '/admin',
+    component: manageUser,
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['admin']
+    }
+  },
+  // =======> Admin Route End <=======
 
   // =======> Resepsionis Route <=======
   {
