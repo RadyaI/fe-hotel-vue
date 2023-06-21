@@ -229,26 +229,26 @@ export default {
         this.getUser()
     },
     methods: {
-        auth() {
-            axios.defaults.headers.common['Authorization'] = 'Bearer' + localStorage.getItem('token')
-        },
+        // auth() {
+        //     axios.defaults.headers.common['Authorization'] = 'Bearer' + localStorage.getItem('token')
+        // },
         getUser() {
-            this.auth()
-            axios.get('http://localhost:8000/api/getuser')
+            // this.auth()
+            axios.get('http://localhost:3000/getUser')
                 .then(
                     (response) => {
                         console.log(response)
-                        this.userData = response.data
+                        this.userData = response.data[0].payLoad.data
                     }
                 )
         },
         addUserData() {
             try {
-                axios.post('http://localhost:8000/api/createuser', this.addUser)
+                axios.post('http://localhost:3000/createUser', this.addUser)
                     .then(
                         (response) => {
                             console.log(response)
-                            this.userData.push(response.data)
+                            this.userData.push(response.data[0].payLoad.data)
                             swal({
                                 icon: 'success',
                                 title: 'Success Add User',
@@ -285,7 +285,7 @@ export default {
             }).then(
                 (deleteUser) => {
                     if (deleteUser) {
-                        axios.delete(`http://localhost:8000/api/deleteuser/${id}`)
+                        axios.delete(`http://localhost:3000/deleteUser/${id}`)
                             .then(
                                 (response) => {
                                     console.log(response)

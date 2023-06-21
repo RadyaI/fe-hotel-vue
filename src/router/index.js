@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Tes from '../views/Tes.vue'
 
 // public
 import DashboardPublic from '../views/public/Dashboard.vue'
@@ -49,10 +50,10 @@ const routes = [
   {
     path: '/admin',
     component: manageUser,
-    meta: {
-      requiresAuth: true,
-      allowedRoles: ['admin']
-    }
+    // meta: {
+    //   requiresAuth: true,
+    //   allowedRoles: ['admin']
+    // }
   },
   // =======> Admin Route End <=======
 
@@ -101,6 +102,10 @@ const routes = [
     component: unauthorized
   },
   // =======> Special Route End <========
+  {
+    path: '/tes',
+    component: Tes
+  }
 ]
 
 const router = new VueRouter({
