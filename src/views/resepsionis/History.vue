@@ -246,11 +246,11 @@ export default {
         this.getHistory()
     },
     methods: {
-        auth() {
-            axios.defaults.headers.common["Authorization"] = 'Bearer' + localStorage.getItem('token')
-        },
+        // auth() {
+        //     axios.defaults.headers.common["Authorization"] = 'Bearer' + localStorage.getItem('token')
+        // },
         getHistory() {
-            this.auth()
+            // this.auth()
             axios.get('http://localhost:8000/api/history')
                 .then(
                     (response) => {

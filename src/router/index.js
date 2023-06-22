@@ -61,34 +61,34 @@ const routes = [
   {
     path: '/resepsionis',
     component: ResepConfirm,
-    meta: {
-      requiresAuth: true,
-      allowedRoles: ['resepsionis']
-    }
+    // meta: {
+    //   requiresAuth: true,
+    //   allowedRoles: ['resepsionis']
+    // }
   },
   {
     path: '/checkin',
     component: Checkin,
-    meta: {
-      requiresAuth: true,
-      allowedRoles: ['resepsionis']
-    }
+    // meta: {
+    //   requiresAuth: true,
+    //   allowedRoles: ['resepsionis']
+    // }
   },
   {
     path: '/checkout',
     component: Checkout,
-    meta: {
-      requiresAuth: true,
-      allowedRoles: ['resepsionis']
-    }
+    // meta: {
+    //   requiresAuth: true,
+    //   allowedRoles: ['resepsionis']
+    // }
   },
   {
     path: '/history',
     component: history,
-    meta: {
-      requiresAuth: true,
-      allowedRoles: ['resepsionis']
-    }
+    // meta: {
+    //   requiresAuth: true,
+    //   allowedRoles: ['resepsionis']
+    // }
   },
   // =======> Resepsionis Route End <=======
 
@@ -116,20 +116,20 @@ const router = new VueRouter({
 
 export default router
 
-router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem('token')
-  const role = localStorage.getItem('role')
+// router.beforeEach((to, from, next) => {
+//   const token = localStorage.getItem('token')
+//   const role = localStorage.getItem('role')
 
-  if (to.meta.requiresAuth && !token) {
-    next({
-      path: '/login'
-    })
-  } else if (to.meta.allowedRoles && !to.meta.allowedRoles.includes(role)) {
-    next({
-      path: '/lol'
-    })
-  } else {
-    next()
-  }
+//   if (to.meta.requiresAuth && !token) {
+//     next({
+//       path: '/login'
+//     })
+//   } else if (to.meta.allowedRoles && !to.meta.allowedRoles.includes(role)) {
+//     next({
+//       path: '/lol'
+//     })
+//   } else {
+//     next()
+//   }
 
-})
+// })
