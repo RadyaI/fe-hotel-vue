@@ -71,7 +71,8 @@
                             <td>{{ i.level }}</td>
                             <td class="btn-group">
                                 <button class="btn btn-info"><i class="bi bi-zoom-in"></i></button>
-                                <button class="btn btn-warning"><i class="bi bi-gear-fill"></i></button>
+                                <button class="btn btn-warning" @click="getDetail(i)" data-bs-target="#editUser"
+                                    data-bs-toggle="modal"><i class="bi bi-gear-fill"></i></button>
                                 <button class="btn btn-danger" @click="deleteUser(i)"><i
                                         class="bi bi-trash-fill"></i></button>
                             </td>
@@ -210,6 +211,44 @@
         </div>
         <!-- Modal Add User End -->
 
+        <!-- Modal Edit User-->
+        <div class="modal fade" id="editUser" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit User</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form @submit.prevent="saveUser">
+                        <div class="modal-body">
+
+                            <label for="name">Name:</label>
+                            <input type="text" id="name" class="form-control" v-model="detailData.name" required>
+
+                            <label for="email">Email:</label>
+                            <input type="email" class="form-control" v-model="detailData.email" required>
+
+                            <label for="password">Password:</label>
+                            <input type="password" v-model="detailData.password" class="form-control">
+                            <small style="color:red;">*Tidak harus di ganti</small><br>
+
+                            <label for="level">Role:</label>
+                            <select class="form-control" v-model="detailData.level" required id="">
+                                <option value="resepsionis">Resepsionis</option>
+                                <option value="admin">Admin</option>
+                            </select>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- End Modal Edit User -->
+
     </div>
 </template>
 
@@ -222,7 +261,8 @@ export default {
     data() {
         return {
             userData: {},
-            addUser: {}
+            addUser: {},
+            detailData: {}
         }
     },
     mounted() {
@@ -242,13 +282,27 @@ export default {
                     }
                 )
         },
+        getDetail(i) {
+            try {
+                axios.get(`http://localhost:3000/getUser/${i.id}`)
+                    .then(
+                        (response) => {
+                            console.log(response)
+                            this.detailData = response.data[0].payLoad.data[0]
+                        }
+                    )
+            }
+            catch (error) {
+                console.log(error)
+            }
+        },
         addUserData() {
             try {
                 axios.post('http://localhost:3000/createUser', this.addUser)
                     .then(
                         (response) => {
                             console.log(response)
-                            this.userData.push(response.data[0].payLoad.data)
+                            this.userData.push(response.data[0].payLoad.data[0])
                             swal({
                                 icon: 'success',
                                 title: 'Success Add User',
@@ -271,8 +325,49 @@ export default {
             } catch (error) {
                 console.log(error)
             }
-
-
+        },
+        saveUser() {
+            try {
+                swal({
+                    title: 'Edit User?',
+                    icon: 'warning',
+                    dangerMode: true,
+                    buttons: ['No', 'Yes']
+                }).then(
+                    (update) => {
+                        if (update) {
+                            axios.put(`http://localhost:3000/updateUser/${this.detailData.id}`, this.detailData)
+                                .then(
+                                    (response) => {
+                                        console.log(response)
+                                        const index = this.userData.findIndex(i => i.id === this.detailData.id)
+                                        this.userData.splice(index, 1, this.detailData)
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Success Update User',
+                                            button: 'yey'
+                                        })
+                                    }
+                                )
+                                .catch(
+                                    (error) => {
+                                        console.log(error)
+                                        if (error.response.status === 500) {
+                                            swal({
+                                                icon: 'error',
+                                                title: 'Internal Server Error',
+                                                button: 'Yaah'
+                                            })
+                                        }
+                                    }
+                                )
+                        }
+                    }
+                )
+            }
+            catch (error) {
+                console.log(error)
+            }
         },
         deleteUser(i) {
             // this.auth()
