@@ -18,6 +18,8 @@
                         <ul class="nav navbar-nav menu_nav desktop-only">
                             <li class="nav-item"><a class="nav-link" href="/admin">Manage User</a></li>
                             <li class="nav-item"><a class="nav-link" href="/room">Manage Room</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/feedback">FeedBack</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#" @click="logout">LogOut</a></li>
                         </ul>
                     </div>
                 </nav>
@@ -427,6 +429,34 @@ export default {
                                     }
                                 }
                             )
+                    }
+                }
+            )
+        },
+        logout() {
+            swal({
+                icon: 'warning',
+                title: 'LogOut?',
+                dangerMode: true,
+                buttons: ['No', 'Yes']
+            }).then(
+                (logout) => {
+                    if (logout) {
+                        localStorage.removeItem('token')
+                        localStorage.removeItem('id')
+                        localStorage.removeItem('role')
+                        swal({
+                            icon: 'success',
+                            title: 'Logout success',
+                            dangerMode: true,
+                            button: 'Login'
+                        }).then(
+                            (login) => {
+                                if (login) {
+                                    location.href = '/login'
+                                }
+                            }
+                        )
                     }
                 }
             )

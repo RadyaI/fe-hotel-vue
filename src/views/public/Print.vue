@@ -112,6 +112,10 @@ export default {
     .hidden {
         display: none;
     }
+
+    .table1{
+        margin-top: 100px;
+    }
 }
 
 .thtd {

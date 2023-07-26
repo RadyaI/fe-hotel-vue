@@ -14,6 +14,7 @@ import Login from '../views/Login.vue'
 // Admin
 import manageUser from '../views/admin/manageUser.vue'
 import manageRoom from '@/views/admin/manageRoom.vue'
+import feedback from '@/views/admin/feedback.vue'
 
 // Resepsionis
 import ResepConfirm from '../views/resepsionis/Confirm.vue'
@@ -51,18 +52,26 @@ const routes = [
   {
     path: '/admin',
     component: manageUser,
-    // meta: {
-    //   requiresAuth: true,
-    //   allowedRoles: ['admin']
-    // }
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['admin']
+    }
   },
   {
     path: '/room',
     component: manageRoom,
-    // meta: {
-    //   requiresAuth: true,
-    //   allowedRoles: ['admin']
-    // }
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['admin']
+    }
+  },
+  {
+    path: '/admin/feedback',
+    component: feedback,
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['admin']
+    }
   },
   // =======> Admin Route End <=======
 
@@ -70,34 +79,34 @@ const routes = [
   {
     path: '/resepsionis',
     component: ResepConfirm,
-    // meta: {
-    //   requiresAuth: true,
-    //   allowedRoles: ['resepsionis']
-    // }
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['resepsionis']
+    }
   },
   {
     path: '/checkin',
     component: Checkin,
-    // meta: {
-    //   requiresAuth: true,
-    //   allowedRoles: ['resepsionis']
-    // }
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['resepsionis']
+    }
   },
   {
     path: '/checkout',
     component: Checkout,
-    // meta: {
-    //   requiresAuth: true,
-    //   allowedRoles: ['resepsionis']
-    // }
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['resepsionis']
+    }
   },
   {
     path: '/history',
     component: history,
-    // meta: {
-    //   requiresAuth: true,
-    //   allowedRoles: ['resepsionis']
-    // }
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['resepsionis']
+    }
   },
   // =======> Resepsionis Route End <=======
 
@@ -125,20 +134,20 @@ const router = new VueRouter({
 
 export default router
 
-// router.beforeEach((to, from, next) => {
-//   const token = localStorage.getItem('token')
-//   const role = localStorage.getItem('role')
+router.beforeEach((to, from, next) => {
+  const token = localStorage.getItem('token')
+  const role = localStorage.getItem('role')
 
-//   if (to.meta.requiresAuth && !token) {
-//     next({
-//       path: '/login'
-//     })
-//   } else if (to.meta.allowedRoles && !to.meta.allowedRoles.includes(role)) {
-//     next({
-//       path: '/lol'
-//     })
-//   } else {
-//     next()
-//   }
+  if (to.meta.requiresAuth && !token) {
+    next({
+      path: '/login'
+    })
+  } else if (to.meta.allowedRoles && !to.meta.allowedRoles.includes(role)) {
+    next({
+      path: '/lol'
+    })
+  } else {
+    next()
+  }
 
-// })
+})

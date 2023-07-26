@@ -179,7 +179,7 @@ a {
                                         name="name" placeholder="Enter your ID Transaksi" autocomplete="off" required>
                                 </div>
                                 <div class="form-group">
-                                    <input type="email" class="form-control" id="email" name="email"
+                                    <input type="email" v-model="feedback.email" class="form-control" id="email" name="email"
                                         placeholder="Enter email address" autocomplete="off" required>
                                 </div>
                                 <!--=====> RATING <=====-->

@@ -20,6 +20,7 @@
                             <li class="nav-item active"><a class="nav-link" href="/checkin">CheckIn</a></li>
                             <li class="nav-item"><a class="nav-link" href="/checkout">Checkout</a></li>
                             <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#" @click="logout">LogOut</a></li>
                         </ul>
                     </div>
                 </nav>
@@ -308,9 +309,37 @@ export default {
                                             icon: 'error',
                                             title: `Error Code ${status}`
                                         })
-                                    }   
+                                    }
                                 }
                             )
+                    }
+                }
+            )
+        },
+        logout() {
+            swal({
+                icon: 'warning',
+                title: 'LogOut?',
+                dangerMode: true,
+                buttons: ['No', 'Yes']
+            }).then(
+                (logout) => {
+                    if (logout) {
+                        localStorage.removeItem('token')
+                        localStorage.removeItem('id')
+                        localStorage.removeItem('role')
+                        swal({
+                            icon: 'success',
+                            title: 'Logout success',
+                            dangerMode: true,
+                            button: 'Login'
+                        }).then(
+                            (login) => {
+                                if (login) {
+                                    location.href = '/login'
+                                }
+                            }
+                        )
                     }
                 }
             )

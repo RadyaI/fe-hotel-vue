@@ -20,6 +20,7 @@
                             <li class="nav-item"><a class="nav-link" href="/checkin">CheckIn</a></li>
                             <li class="nav-item"><a class="nav-link" href="/checkout">Checkout</a></li>
                             <li class="nav-item active"><a class="nav-link" href="/history">History</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#" @click="logout">LogOut</a></li>
                         </ul>
                     </div>
                 </nav>
@@ -59,7 +60,7 @@
         <!--===============> Ongoing data area <===============-->
         <section class="about_history_area section_gap" style="margin-top: -5pc;">
             <div class="container">
-                <div class="card mb-4" v-for="i in historyData" :key="i.id_transaksi">
+                <div class="card mb-4" v-for="i in filterData" :key="i.id_transaksi">
                     <div class="card-header">
                         Tanggal pesan / {{ i.tgl_pesan }}
                     </div>
@@ -218,6 +219,8 @@
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="button" data-bs-dismiss="modal">Close</button>
+                        <!-- <button @click="printModalContent()">Print Modal Content</button> -->
+
                     </div>
                 </div>
             </div>
@@ -245,10 +248,34 @@ export default {
     mounted() {
         this.getHistory()
     },
+    computed: {
+        filterData() {
+            let filterData = this.historyData
+            if (this.searchID) {
+                filterData = filterData.filter(i => i.nama_tamu.toLowerCase().toString().includes(this.searchID.toLowerCase()))
+            }
+            return filterData
+        }
+    },
     methods: {
         auth() {
-            axios.defaults.headers.common['Authorization'] = 'bearer' + localStorage.getItem('token ')
+            axios.defaults.headers.common['Authorization'] = 'Bearer' + localStorage.getItem('token')
         },
+        // printModalContent() {
+        //     const modalContent = document.querySelector('#confirmDetail .modal-content').innerHTML;
+
+        //     // Simpan isi body dari halaman saat ini untuk dicetak nanti
+        //     const originalBody = document.body.innerHTML;
+
+        //     // Menyiapkan halaman baru hanya dengan konten modal yang ingin dicetak
+        //     document.body.innerHTML = modalContent;
+
+        //     // Lakukan pencetakan
+        //     window.print();
+
+        //     // Kembalikan isi body asli setelah pencetakan selesai
+        //     document.body.innerHTML = originalBody;
+        // },
         getHistory() {
             this.auth()
             axios.get('http://localhost:8000/api/history')
@@ -306,6 +333,34 @@ export default {
                     }
                 )
         },
+        logout() {
+            swal({
+                icon: 'warning',
+                title: 'LogOut?',
+                dangerMode: true,
+                buttons: ['No', 'Yes']
+            }).then(
+                (logout) => {
+                    if (logout) {
+                        localStorage.removeItem('token')
+                        localStorage.removeItem('id')
+                        localStorage.removeItem('role')
+                        swal({
+                            icon: 'success',
+                            title: 'Logout success',
+                            dangerMode: true,
+                            button: 'Login'
+                        }).then(
+                            (login) => {
+                                if (login) {
+                                    location.href = '/login'
+                                }
+                            }
+                        )
+                    }
+                }
+            )
+        }
 
     }
 }

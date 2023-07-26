@@ -1,11 +1,11 @@
-
 <template>
     <div>
-        <header class="header_area" style="position: fixed;">
+        <!--================Header Area =================-->
+        <header class="header_area">
             <div class="container">
                 <nav class="navbar navbar-expand-lg navbar-light">
                     <!-- Brand and toggle get grouped for better mobile display -->
-                    <a class="navbar-brand logo_h" href="/"><img src="image/Logo.png" alt=""></a>
+                    <a class="navbar-brand logo_h" href="index.html"><img src="/image/Logo.png" alt=""></a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                         aria-label="Toggle navigation">
@@ -16,16 +16,16 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                         <ul class="nav navbar-nav menu_nav desktop-only">
-                            <li class="nav-item"><a class="nav-link" href="/resepsionis">Home</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/checkin">CheckIn</a></li>
-                            <li class="nav-item active"><a class="nav-link" href="/checkout">Checkout</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin">Manage User</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/room">Manage Room</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/admin/feedback">FeedBack</a></li>
                             <li class="nav-item"><a class="nav-link" href="#" @click="logout">LogOut</a></li>
                         </ul>
                     </div>
                 </nav>
             </div>
         </header>
+        <!--================Header Area =================-->
 
         <!--================Breadcrumb Area =================-->
         <section class="breadcrumb_area">
@@ -33,34 +33,50 @@
             </div>
             <div class="container">
                 <div class="page-cover text-center">
-                    <h2 class="page-cover-tittle">Check-Out</h2>
+                    <h2 class="page-cover-tittle">Feedback</h2>
                     <ol class="breadcrumb" style="display: flex; justify-content: center;">
-                        <li><a href="/resepsionis">Home</a></li>
-                        <li class="active">CheckOut</li>
+                        <li><a href="/admin">Home</a></li>
+                        <li class="active">Feedback</li>
                     </ol>
                 </div>
             </div>
         </section>
         <!--================Breadcrumb Area =================-->
 
-        <!--===============> Ongoing data area <===============-->
-        <section class="about_history_area section_gap" style="margin-top: -5pc;">
-            <div class="container">
-                <div class="card mb-4" v-for="i in ongoingData" :key="i.id_transaksi">
-                    <div class="card-header">
-                        Tanggal pesan / {{ i.tgl_pesan }}
-                    </div>
-                    <div class="card-body">
-                        <h5 class="card-title">Atas nama <b style="color: blue;">{{ i.nama_tamu }}</b></h5>
-                        <p class="card-text text-light badge-danger badge">In use</p> <br>
-                        <button class="button" @click="getDetailBooking(i)" data-bs-toggle="modal"
-                            data-bs-target="#confirmDetail"> Detail
-                        </button>
-                    </div>
+        <!--================Manage Area =================-->
+        <div class="mt-5 mb-5">
+            <div class="row mb-4" style="margin-left: 62px;">
+                <div class="col-5">
+                    <input type="email" class="form-control" v-model="searchUser" placeholder="Search email...">
                 </div>
             </div>
-        </section>
-        <!--===============> Ongoing data area <===============-->
+            <div class="container">
+
+                <div class="card">
+                    <div class="card-header">
+                        {{ this.totalFeedback }} Feedback
+                    </div>
+                    <div class="card-body">
+                        <!-- ISI -->
+                        <div class="card mb-4" v-for="i in filterData" :key="i.id_feedback">
+                            <div class="card-header">
+                                From <span style="color: blue; cursor: pointer;">{{ i.email }} <span style="color: black;">/
+                                        {{ i.tgl }}</span></span>
+                            </div>
+                            <div class="card-body">
+                                <p style="color: black;" class="card-text">{{ i.isi }} <br> <br>
+                                    <span style="font-weight:bold;" class="badge badge-success">{{ i.review }} / 5</span>
+                                </p>
+
+                            </div>
+                        </div>
+                        <!-- ISI -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!--================Manage Area =================-->
 
         <!--================ start footer Area  =================-->
         <footer class="footer-area section_gap">
@@ -69,7 +85,7 @@
                     <div class="col-lg-3  col-md-6 col-sm-6">
                         <div class="single-footer-widget">
                             <h6 class="footer_title">About Agency</h6>
-                            <p>The world has become so fast paced that people don't want to stand by reading a page of
+                            <p>The world has become so fast paced that people don’t want to stand by reading a page of
                                 information, they would much rather look at a presentation and understand the message. It
                                 has come to a point </p>
                         </div>
@@ -151,149 +167,55 @@
         </footer>
         <!--================ End footer Area  =================-->
 
-        <!--==========> Modal Detail Confirm <==========-->
-        <div class="modal fade" id="confirmDetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-xl">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Booking Detail</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col">
-                                <label for="id">ID Booking:</label>
-                                <input type="text" class="form-control" readonly v-model="detailData.id_transaksi">
-                            </div>
-                            <div class="col">
-                                <label for="nama">Nama Tamu:</label>
-                                <input type="text" class="form-control" readonly v-model="detailData.nama_tamu">
-                            </div>
-                            <div class="col">
-                                <label for="email">Email:</label>
-                                <input type="email" class="form-control" readonly v-model="detailData.email">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <label for="tgl_pesan">Tanggal Pesan:</label>
-                                <input type="date" class="form-control" readonly v-model="detailData.tgl_pesan">
-                            </div>
-                            <div class="col">
-                                <label for="tgl_checkin">Tanggal Check-In:</label>
-                                <input type="date" class="form-control" readonly v-model="detailData.check_in">
-                            </div>
-                            <div class="col">
-                                <label for="tgl_checkout">Tanggal Check-Out:</label>
-                                <input type="date" class="form-control" readonly v-model="detailData.check_out">
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col">
-                                <label for="type">Type Kamar:</label>
-                                <input type="text" class="form-control" readonly v-model="detailData.type_kamar">
-                            </div>
-                            <div class="col">
-                                <label for="harga">Harga / Malam:</label>
-                                <input type="number" class="form-control" readonly v-model="detailData.harga">
-                            </div>
-                            <div class="col">
-                                <label for="total">Total Harga - {{ detailData.jumlah_kamar }} Malam:</label>
-                                <input type="number" class="form-control" readonly v-model="detailData.total_harga">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="button" @click="checkOut">Check-Out</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!--==========> Modal Detail Confirm End <==========-->
-
     </div>
 </template>
 
 <script>
-import axios from 'axios'
-import swal from 'sweetalert'
+import axios from 'axios';
+import swal from 'sweetalert';
+
 
 export default {
-    name: 'App',
+    name: 'app',
     data() {
         return {
-            ongoingData: {},
-            detailData: {},
-            nomorKamar: ''
+            feedbackData: {},
+            totalFeedback: '',
+            searchUser: '',
+        }
+    },
+    computed: {
+        filterData() {
+            let filterData = this.feedbackData
+            if (this.searchUser) {
+                filterData = filterData.filter(i => i.email.toLowerCase().toString().includes(this.searchUser.toLowerCase))
+            }
+            return filterData
         }
     },
     mounted() {
-        this.getOngoing()
+        this.getFeedback()
     },
     methods: {
-        getOngoing() {
-            axios.get('http://localhost:8000/api/ongoing')
+        auth() {
+            // axios.defaults.headers.common['Accept'] = ''
+        },
+        getFeedback() {
+            axios.defaults.headers.common['Authorization'] = 'Bearer' + localStorage.getItem('token')
+            axios.get('http://localhost:8000/api/getFeedback')
                 .then(
-                    (res) => {
-                        console.log(res)
-                        this.ongoingData = res.data
+                    (response) => {
+                        console.log(response)
+                        this.feedbackData = response.data
                     }
                 )
-        },
-        getDetailBooking(i) {
-            axios.get('http://localhost:8000/api/gettransaksibyid/' + i.id_transaksi)
+            axios.get('http://localhost:8000/api/countFeedback')
                 .then(
-                    (res) => {
-                        console.log(res)
-                        this.detailData = res.data
+                    (response) => {
+                        console.log(response)
+                        this.totalFeedback = response.data
                     }
                 )
-        },
-        checkOut() {
-            let id = this.detailData.id_transaksi
-            let id_kamar = this.detailData.id_kamar
-            swal({
-                icon: 'warning',
-                title: 'Are you sure?',
-                dangerMode: true,
-                buttons: ['No', 'Yes']
-            }).then(
-                (checkout) => {
-                    if (checkout) {
-                        axios.put(`http://localhost:8000/api/checkout/${id}/${id_kamar}`)
-                            .then(
-                                (res) => {
-                                    console.log(res)
-                                    swal({
-                                        icon: 'success',
-                                        title: 'Check-Out Successfull',
-                                        button: 'close',
-                                        dangerMode: true
-                                    }).then(
-                                        (close) => {
-                                            if (close) {
-                                                location.reload()
-                                            }
-                                        }
-                                    )
-                                }
-                            )
-                            .catch(
-                                (error) => {
-                                    console.log(error)
-                                    if (error.response.status === 500) {
-                                        let title = error.response.data.message
-                                        swal({
-                                            title: `${title}`,
-                                            icon: 'error'
-                                        })
-                                    }
-                                }
-                            )
-                    }
-                }
-            )
         },
         logout() {
             swal({
@@ -332,33 +254,16 @@ export default {
     .desktop-only {
         margin-left: 400px;
     }
+}
 
-    a,
-    p {
-        text-decoration: none;
-        color: white;
-    }
+/* th {
+    background-color: black;
+    color: white;
+} */
 
-    .button {
-        background: #FBCA1F;
-        font-family: inherit;
-        padding: 0.1em 1.3em;
-        font-weight: 900;
-        font-size: 18px;
-        border: 3px solid black;
-        border-radius: 0.4em;
-        box-shadow: 0.1em 0.1em;
-    }
-
-    .button:hover {
-        transform: translate(-0.05em, -0.05em);
-        box-shadow: 0.15em 0.15em;
-    }
-
-    .button:active {
-        transform: translate(0.05em, 0.05em);
-        box-shadow: 0.05em 0.05em;
-    }
-
+a,
+p {
+    color: white;
+    text-decoration: none;
 }
 </style>

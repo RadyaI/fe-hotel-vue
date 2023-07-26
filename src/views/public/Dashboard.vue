@@ -3,6 +3,11 @@
     .desktop-only {
         margin-left: 400px;
     }
+
+    p, a{
+        color: white;
+        text-decoration: none;
+    }
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
