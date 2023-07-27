@@ -36,7 +36,8 @@
                     <h2 class="page-cover-tittle">Payment Confirmation</h2>
                     <ol class="breadcrumb" style="display: flex; justify-content: center;">
                         <li><a href="index.html">Home</a></li>
-                        <li class="active">Confirmation</li>
+                        <li class="active" style="cursor: pointer;">Confirmation</li>
+                        <li class="active" style="cursor: pointer;">{{ getNama }}</li>
                     </ol>
                 </div>
             </div>
@@ -44,7 +45,7 @@
         <!--================Breadcrumb Area =================-->
 
         <!--==========> Search Area <==========-->
-        <div class="kotak mt-3 ml-2">
+        <div class="kotak mt-3 ml-2 ">
             <input type="date" autocomplete="off" v-model="searchDate" name="text" class="input"
                 placeholder="Search guest name...">
             <!-- <button class="search__btn">
@@ -239,7 +240,8 @@ export default {
         return {
             confirmData: {},
             detailData: {},
-            searchDate: ''
+            searchDate: '',
+            getNama: localStorage.getItem('nama')
         }
     },
     mounted() {
@@ -255,6 +257,7 @@ export default {
         }
     },
     methods: {
+
         logout() {
             swal({
                 icon: 'warning',
@@ -288,7 +291,7 @@ export default {
             // Ini buat set header nya pake token biar bisa ngambil data nya
         },
         getConfirm() {
-            this.auth() 
+            this.auth()
             axios.get('http://localhost:8000/api/notconfirmed')
                 .then(
                     (res) => {

@@ -4,7 +4,8 @@
         margin-left: 400px;
     }
 
-    p, a{
+    p,
+    a {
         color: white;
         text-decoration: none;
     }
@@ -119,7 +120,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                                                 </div>
                                                 <!-- <a class="book_now_btn button_hover" style="text-decoration: none;" href="#">Book Now</a> -->
                                                 <label for="submit"></label>
-                                                <button type="submit" class=" mt-3 book_now_btn button_hover" id="submit"
+                                                <button type="submit" @click="goToKamar"
+                                                    class=" mt-3 book_now_btn button_hover" id="submit"
                                                     style="text-decoration: none;">Search Now</button>
                                             </div>
                                         </div>
@@ -134,7 +136,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <!--================Banner Area =================-->
 
         <!--================ Booking Area  =================-->
-        <section class="accomodation_area section_gap" id="booking">
+        <section class="accomodation_area section_gap" id="booking" ref="bookingKamar">
             <div class="container">
                 <div class="section_title text-center">
                     <h2 class="title_color">Hotel Accomodation</h2>
@@ -219,7 +221,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <!--================ Facilities Area  =================-->
 
         <!--================ About History Area  =================-->
-        <section class="about_history_area section_gap">
+        <!-- <section class="about_history_area section_gap">
             <div class="container">
                 <div class="row">
                     <div class="col-md-6 d_flex align-items-center">
@@ -236,11 +238,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
         <!--================ About History Area  =================-->
 
         <!--================ Testimonial Area  =================-->
-        <section class="testimonial_area section_gap">
+        <!-- <section class="testimonial_area section_gap">
             <div class="container">
                 <div class="section_title text-center">
                     <h2 class="title_color">Testimonial from our Clients</h2>
@@ -318,11 +320,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
         <!--================ Testimonial Area  =================-->
 
         <!--================ Latest Blog Area  =================-->
-        <section class="latest_blog_area section_gap">
+        <!-- <section class="latest_blog_area section_gap">
             <div class="container">
                 <div class="section_title text-center">
                     <h2 class="title_color">latest posts from blog</h2>
@@ -389,7 +391,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     </div>
                 </div>
             </div>
-        </section>
+        </section> -->
         <!--================ Recent Area  =================-->
 
         <!--================ start footer Area  =================-->
@@ -513,23 +515,23 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                                     <div class="row mt-3">
                                         <div class="col">
                                             <label for="checkin">Check-in:</label>
-                                            <input type="date" class="form-control" @change="hitungTotalHarga" required
+                                            <input type="date" class="form-control" @input="hitungTotalHarga" required
                                                 v-model="filter.checkin">
                                         </div>
                                         <div class="col">
                                             <label for="checkout">Check-out:</label>
-                                            <input type="date" class="form-control" @change="hitungTotalHarga" required
+                                            <input type="date" class="form-control" @input="hitungTotalHarga" required
                                                 v-model="filter.checkout">
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="col">
                                             <label for="jumlah">Jumlah kamar: </label>
-                                            <input type="number" class="form-control" @change="hitungTotalHarga" required
+                                            <input type="number" class="form-control" @input="hitungTotalHarga" required
                                                 placeholder="Jumlah kamar..." v-model="bookData.jumlah_kamar">
                                         </div>
                                         <div class="col">
-                                            <input type="hidden" v-model="roomDetail.harga" @change="hitungTotalHarga">
+                                            <input type="hidden" v-model="roomDetail.harga" @input="hitungTotalHarga">
                                             <label for="harga">Total harga:</label>
                                             <input type="number" class="form-control" v-model="bookData.harga">
                                             <small v-if="this.bookData.harga < 0" style="color: red;">*Masukkan data dengan
@@ -579,6 +581,9 @@ export default {
 
     },
     methods: {
+        goToKamar() {
+            this.$refs.bookingKamar.scrollIntoView({ behavior: 'smooth' })
+        },
         getRoom() {
             // axios.get('http://localhost:8000/api/filterKamar/1-2')
             axios.get('http://localhost:8000/api/filterKamar/' + this.filter.person)
