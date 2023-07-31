@@ -40,6 +40,9 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                         <ul class="nav navbar-nav menu_nav desktop-only">
                             <li class="nav-item active"><a class="nav-link" href="/">Home</a></li>
+                            
+                            <!-- <li class="nav-item active"><router-link to="/check" class="nav-link">Check</router-link></li> -->
+
                             <li class="nav-item"><a class="nav-link" href="/check">Check Booking</a></li>
                             <li class="nav-item"><a class="nav-link" href="/feedback">Feedback</a></li>
                             <li class="nav-item"><a class="nav-link" href="gallery.html">Gallery</a></li>
@@ -139,7 +142,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
         <section class="accomodation_area section_gap" id="booking" ref="bookingKamar">
             <div class="container">
                 <div class="section_title text-center">
-                    <h2 class="title_color">Hotel Accomodation</h2>
+                    <h2 class="title_color">Hotel Room</h2>
                     <p>We all live in an age that belongs to the young at heart. Life that is becoming extremely fast, </p>
                 </div>
                 <div class="row mb_30">
@@ -515,7 +518,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                                     <div class="row mt-3">
                                         <div class="col">
                                             <label for="checkin">Check-in:</label>
-                                            <input type="date" class="form-control" @input="hitungTotalHarga" required
+                                            <input type="date" cjlass="form-control" @input="hitungTotalHarga" required
                                                 v-model="filter.checkin">
                                         </div>
                                         <div class="col">
@@ -583,6 +586,14 @@ export default {
     methods: {
         goToKamar() {
             this.$refs.bookingKamar.scrollIntoView({ behavior: 'smooth' })
+            setTimeout(() => {
+                swal({
+                    icon: false,
+                    title: 'Loading!',
+                    button: false,
+                    timer: 1000
+                })
+            }, 500);
         },
         getRoom() {
             // axios.get('http://localhost:8000/api/filterKamar/1-2')

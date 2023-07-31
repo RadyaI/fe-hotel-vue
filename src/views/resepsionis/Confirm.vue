@@ -45,7 +45,7 @@
         <!--================Breadcrumb Area =================-->
 
         <!--==========> Search Area <==========-->
-        <div class="kotak mt-3 ml-2 ">
+        <div class="kotak mt-3 ">
             <input type="date" autocomplete="off" v-model="searchDate" name="text" class="input"
                 placeholder="Search guest name...">
             <!-- <button class="search__btn">
@@ -257,7 +257,6 @@ export default {
         }
     },
     methods: {
-
         logout() {
             swal({
                 icon: 'warning',
@@ -297,6 +296,21 @@ export default {
                     (res) => {
                         console.log(res.data)
                         this.confirmData = res.data
+                        let alert = 'Token is Expired'
+                        if (res.data.status == alert) {
+                            swal({
+                                icon: 'warning',
+                                title: `${alert}`,
+                                button: 'login',
+                                dangerMode: true
+                            }).then(
+                                (logout) => {
+                                    if (logout) {
+                                        location.href = '/login'
+                                    }
+                                }
+                            )
+                        }
                     }
                 )
                 .catch(
