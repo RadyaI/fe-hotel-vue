@@ -80,18 +80,11 @@ p {
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                         <ul class="nav navbar-nav menu_nav desktop-only">
-                            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-                            <li class="nav-item active"><a class="nav-link" href="/check">Check Booking</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/feedback">Feedback</a></li>
-                            <li class="nav-item"><a class="nav-link" href="gallery.html">Gallery</a></li>
-                            <li class="nav-item submenu dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
-                                    aria-haspopup="true" aria-expanded="false">Blog</a>
-                                <ul class="dropdown-menu">
-                                    <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="blog-single.html">Blog Details</a></li>
-                                </ul>
-                            </li>
+                            <li class="nav-item"><router-link to="/" class="nav-link">Home</router-link></li>
+                            <li class="nav-item active"><router-link to="/check" class="nav-link">Check Booking</router-link></li>
+                            <li class="nav-item"><router-link to="/feedback" class="nav-link">Feedback</router-link></li>
+                            <li class="nav-item"><router-link to="/login/user" class="nav-link">Login</router-link></li>
+                            <li class="nav-item"><router-link to="/history/user" class="nav-link">History</router-link></li>
                         </ul>
                     </div>
                 </nav>

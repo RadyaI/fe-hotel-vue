@@ -377,7 +377,8 @@ export default {
                                     }).then(
                                         (tutup) => {
                                             if (tutup) {
-                                                location.reload()
+                                                $('#confirmDetail').modal('hide')
+                                                this.confirmData = this.confirmData.filter(i => i.id_transaksi != this.detailData.id_transaksi)
                                             }
                                         }
                                     )

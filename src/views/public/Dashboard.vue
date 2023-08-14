@@ -39,21 +39,13 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                         <ul class="nav navbar-nav menu_nav desktop-only">
-                            <li class="nav-item active"><a class="nav-link" href="/">Home</a></li>
-                            
-                            <!-- <li class="nav-item active"><router-link to="/check" class="nav-link">Check</router-link></li> -->
 
-                            <li class="nav-item"><a class="nav-link" href="/check">Check Booking</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/feedback">Feedback</a></li>
-                            <li class="nav-item"><a class="nav-link" href="gallery.html">Gallery</a></li>
-                            <li class="nav-item submenu dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button"
-                                    aria-haspopup="true" aria-expanded="false">Blog</a>
-                                <ul class="dropdown-menu">
-                                    <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="blog-single.html">Blog Details</a></li>
-                                </ul>
-                            </li>
+                            <li class="nav-item active"><router-link to="/" class="nav-link">Home</router-link></li>
+                            <li class="nav-item"><router-link to="/check" class="nav-link">Check Booking</router-link></li>
+                            <li class="nav-item"><router-link to="/feedback" class="nav-link">Feedback</router-link></li>
+                            <li class="nav-item"><router-link to="/login" class="nav-link">Login</router-link></li>
+                            <li class="nav-item"><router-link to="/history/user" class="nav-link">History</router-link></li>
+
                         </ul>
                     </div>
                 </nav>
@@ -72,10 +64,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         <h2>Relax Your Mind</h2>
                         <p>If you are looking at blank cassettes on the web, you may be very confused at the<br> difference
                             in price. You may see some for as low as $.17 each.</p>
-                        <a href="#" class="btn btn-warning text-light"
-                            style="text-transform: uppercase; font-weight: bold; " data-toggle="modal"
-                            data-bs-target="#OpenModal">Get
-                            Started</a>
+                        
                     </div>
                 </div>
             </div>
@@ -86,7 +75,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         <div class="col-md-3">
                             <h2>Book<br> Your Room</h2>
                         </div>
-                        <div class="col-md-9">
+                        <div class="col-md-9" ref="bookYourRoom">
                             <div class="boking_table">
                                 <form @submit.prevent="getRoom">
                                     <div class="row">
@@ -143,7 +132,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
             <div class="container">
                 <div class="section_title text-center">
                     <h2 class="title_color">Hotel Room</h2>
-                    <p>We all live in an age that belongs to the young at heart. Life that is becoming extremely fast, </p>
+                    <p class="text-dark">We all live in an age that belongs to the young at heart. Life that is becoming extremely fast, </p>
                 </div>
                 <div class="row mb_30">
                     <div class="col-lg-3 col-sm-6" v-for="room in roomData" :key="room.id_kamar">
@@ -471,8 +460,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                 <div class="row footer-bottom d-flex justify-content-between align-items-center">
                     <p class="col-lg-8 col-sm-12 footer-text m-0">
                         <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
-                        Copyright &copy; 2023 All rights reserved | This template is made with <i class="fa fa-heart-o"
-                            aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                        Copyright &copy; 2023 All rights reserved | made with <i class="fa fa-heart-o"
+                            aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> redesign by radya with tears
                         <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                     </p>
                     <div class="col-lg-4 col-sm-12 footer-social">
@@ -518,7 +507,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                                     <div class="row mt-3">
                                         <div class="col">
                                             <label for="checkin">Check-in:</label>
-                                            <input type="date" cjlass="form-control" @input="hitungTotalHarga" required
+                                            <input type="date" class="form-control" @input="hitungTotalHarga" required
                                                 v-model="filter.checkin">
                                         </div>
                                         <div class="col">
@@ -564,6 +553,8 @@ export default {
     name: 'app',
     data() {
         return {
+            id: localStorage.getItem('id'),
+
             roomData: {},
             bookData: {
                 jumlah_kamar: 0,
@@ -584,6 +575,9 @@ export default {
 
     },
     methods: {
+        goBookYourRoom() {
+            this.$refs.bookingKamar.scrollIntoView({ behavior: 'smooth' })
+        },
         goToKamar() {
             this.$refs.bookingKamar.scrollIntoView({ behavior: 'smooth' })
             setTimeout(() => {
