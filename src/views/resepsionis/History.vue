@@ -16,10 +16,11 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                         <ul class="nav navbar-nav menu_nav desktop-only">
-                            <li class="nav-item"><a class="nav-link" href="/resepsionis">Home</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/checkin">CheckIn</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/checkout">Checkout</a></li>
-                            <li class="nav-item active"><a class="nav-link" href="/history">History</a></li>
+                            <li class="nav-item"><router-link to="/resepsionis" class="nav-link">Confirm</router-link></li>
+                            <li class="nav-item"><router-link to="/checkin" class="nav-link">CheckIn</router-link></li>
+                            <li class="nav-item"><router-link to="/checkout" class="nav-link">Checkout</router-link></li>
+                            <li class="nav-item active"><router-link to="/history" class="nav-link">History</router-link>
+                            </li>
                             <li class="nav-item"><a class="nav-link" href="#" @click="logout">LogOut</a></li>
                         </ul>
                     </div>
@@ -59,7 +60,20 @@
                 </div>
             </div>
             <div class="col">
-                <button class="btn btn-success" style="margin-top: 2.5%; margin-left: -50%;" @click="exportExcel"><i
+                <div class="kotak mt-3" style="margin-left: -100px;">
+                    <input type="date" autocomplete="off" v-model="searchDate" name="text" class="input"
+                        placeholder="Search guest name...">
+                    <button class="search__btn" @click="searchHistory">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22">
+                            <path
+                                d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247L16.0247 15.8748Z"
+                                fill="#efeff1"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            <div class="col">
+                <button class="btn btn-success" style="margin-top: 3.8%; margin-left: -85%;" @click="exportExcel"><i
                         class="bi bi-file-earmark-excel"></i></button>
             </div>
         </div>
@@ -251,7 +265,9 @@ export default {
             historyData: {},
             detailData: {},
             nomorKamar: '',
-            searchID: ''
+
+            searchID: '',
+            searchDate: '',
         }
     },
     mounted() {
@@ -262,6 +278,10 @@ export default {
             let filterData = this.historyData
             if (this.searchID) {
                 filterData = filterData.filter(i => i.nama_tamu.toLowerCase().toString().includes(this.searchID.toLowerCase()))
+            }
+
+            if (this.searchDate) {
+                filterData = filterData.filter(i => i.tgl_pesan.includes(this.searchDate))
             }
             return filterData
         }
@@ -293,21 +313,6 @@ export default {
         auth() {
             axios.defaults.headers.common['Authorization'] = 'Bearer' + localStorage.getItem('token')
         },
-        // printModalContent() {
-        //     const modalContent = document.querySelector('#confirmDetail .modal-content').innerHTML;
-
-        //     // Simpan isi body dari halaman saat ini untuk dicetak nanti
-        //     const originalBody = document.body.innerHTML;
-
-        //     // Menyiapkan halaman baru hanya dengan konten modal yang ingin dicetak
-        //     document.body.innerHTML = modalContent;
-
-        //     // Lakukan pencetakan
-        //     window.print();
-
-        //     // Kembalikan isi body asli setelah pencetakan selesai
-        //     document.body.innerHTML = originalBody;
-        // },
         getHistory() {
             this.auth()
             axios.get('http://localhost:8000/api/history')
@@ -342,6 +347,12 @@ export default {
                                     }
                                 }
                             )
+                        } else if (error.response.data.status === 'Token is Expired') {
+                            swal({
+                                icon: 'warning',
+                                title: `${error.response.data.status}`,
+                                button: 'Login'
+                            })
                         }
                     }
                 )

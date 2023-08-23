@@ -16,11 +16,13 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                         <ul class="nav navbar-nav menu_nav desktop-only">
-                            <li class="nav-item active"><a class="nav-link" href="/resepsionis">Home</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/checkin">CheckIn</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/checkout">Checkout</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
+
+                            <li class="nav-item active"><router-link to="/resepsionis" class="nav-link">Confirm</router-link></li>
+                            <li class="nav-item"><router-link to="/checkin" class="nav-link">CheckIn</router-link></li>
+                            <li class="nav-item"><router-link to="/checkout" class="nav-link">Checkout</router-link></li>
+                            <li class="nav-item"><router-link to="/history" class="nav-link">History</router-link></li>
                             <li class="nav-item"><a class="nav-link" href="#" @click="logout">LogOut</a></li>
+                            
                         </ul>
                     </div>
                 </nav>
@@ -167,7 +169,8 @@
         <!--================ End footer Area  =================-->
 
         <!--==========> Modal Detail Confirm <==========-->
-        <div class="modal fade" id="confirmDetail" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" ref="confirmDetail" id="confirmDetail" tabindex="-1" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -220,7 +223,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="button" @click="confirm">Confirm</button>
+                        <button type="submit" class="button" @click="confirm" data-bs-dismiss="modal">Confirm</button>
                     </div>
                 </div>
             </div>
@@ -233,6 +236,8 @@
 <script>
 import axios from 'axios'
 import swal from 'sweetalert'
+// import boots from 'bootstrap'
+// import $ from 'jquery'
 
 export default {
     name: 'App',
@@ -377,7 +382,6 @@ export default {
                                     }).then(
                                         (tutup) => {
                                             if (tutup) {
-                                                $('#confirmDetail').modal('hide')
                                                 this.confirmData = this.confirmData.filter(i => i.id_transaksi != this.detailData.id_transaksi)
                                             }
                                         }
@@ -403,10 +407,13 @@ export default {
                     }
                 }
             )
-        }
+        },
+
     }
 }
 </script>
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+
 
 <style scoped>
 @media screen and (min-width: 768px) {

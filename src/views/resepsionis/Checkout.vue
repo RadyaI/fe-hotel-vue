@@ -16,10 +16,10 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                         <ul class="nav navbar-nav menu_nav desktop-only">
-                            <li class="nav-item"><a class="nav-link" href="/resepsionis">Home</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/checkin">CheckIn</a></li>
-                            <li class="nav-item active"><a class="nav-link" href="/checkout">Checkout</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
+                            <li class="nav-item"><router-link to="/resepsionis" class="nav-link">Confirm</router-link></li>
+                            <li class="nav-item"><router-link to="/checkin" class="nav-link">CheckIn</router-link></li>
+                            <li class="nav-item active"><router-link to="/checkout" class="nav-link">Checkout</router-link></li>
+                            <li class="nav-item"><router-link to="/history" class="nav-link">History</router-link></li>
                             <li class="nav-item"><a class="nav-link" href="#" @click="logout">LogOut</a></li>
                         </ul>
                     </div>

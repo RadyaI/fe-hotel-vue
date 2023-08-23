@@ -16,10 +16,11 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                         <ul class="nav navbar-nav menu_nav desktop-only">
-                            <li class="nav-item"><a class="nav-link" href="/resepsionis">Home</a></li>
-                            <li class="nav-item active"><a class="nav-link" href="/checkin">CheckIn</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/checkout">Checkout</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/history">History</a></li>
+                            <li class="nav-item"><router-link to="/resepsionis" class="nav-link">Confirm</router-link></li>
+                            <li class="nav-item active"><router-link to="/checkin" class="nav-link">CheckIn</router-link>
+                            </li>
+                            <li class="nav-item"><router-link to="/checkout" class="nav-link">Checkout</router-link></li>
+                            <li class="nav-item"><router-link to="/history" class="nav-link">History</router-link></li>
                             <li class="nav-item"><a class="nav-link" href="#" @click="logout">LogOut</a></li>
                         </ul>
                     </div>
@@ -61,6 +62,7 @@
             </div>
         </section>
         <!--===============> Not Confirm data area <===============-->
+
 
         <!--================ start footer Area  =================-->
         <footer class="footer-area section_gap">
@@ -198,12 +200,13 @@
                                 <input type="number" class="form-control" readonly v-model="detailData.harga">
                             </div>
                             <div class="col">
-                                <label for="total">Total Harga - {{ detailData.jumlah_kamar }} Malam:</label>
+                                <label for="total">Total Harga - {{ detailData.jumlah_kamar }} Malam - {{
+                                    detailData.jumlah_kamar }} Kamar :</label>
                                 <input type="number" class="form-control" readonly v-model="detailData.total_harga">
                             </div>
                         </div>
                         <div class="row">
-                            <div class="col">
+                            <!-- <div class="col">
                                 <label for="kamar">No Kamar:</label>
                                 <input type="number" class="form-control" v-model="nomorKamar" required
                                     placeholder="Masukkan nomor kamar..." autocomplete="off">
@@ -213,6 +216,11 @@
                             </div>
                             <div class="col">
                                 <input type="hidden" class="form-control">
+                            </div> -->
+                            <label for="kamar">No Kamar:</label>
+                            <div class="col">
+                                <input type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                                    data-bs-target="#addNoKamar" value="Masukkan kamar">
                             </div>
                         </div>
                     </div>
@@ -224,6 +232,41 @@
             </div>
         </div>
         <!--==========> Modal Detail Confirm End <==========-->
+
+        <!-- Modal Buat Nomor Kamar -->
+        <div class="modal fade" id="addNoKamar" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Choose a room</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <select class="form-control">
+                            <option value="">Pilih Lantai</option>
+                            <option value="1">Lantai 1</option>
+                            <option value="2">Lantai 2</option>
+                            <option value="3">Lantai 3</option>
+                        </select>
+
+                        <button class="btn btn-success"
+                            :class="{ 'btn-success': i.status === 'kosong', 'btn-danger': i.status === 'dipakai' }"
+                            style="margin-left: 7px; margin-top:7px;" value="success" v-for="i in noKamarData"
+                            :key="i.id_no_kamar" @click="submitKamar(i)">
+                            {{ i.no_kamar }}
+                        </button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
+                            data-bs-target="#confirmDetail">Back</button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#confirmDetail">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Buat Nomor Kamar End -->
 
     </div>
 </template>
@@ -239,7 +282,9 @@ export default {
         return {
             checkinData: {},
             detailData: {},
-            nomorKamar: ''
+            nomorKamar: '',
+
+            noKamarData: {}
         }
     },
     mounted() {
@@ -252,6 +297,18 @@ export default {
                     (res) => {
                         console.log(res)
                         this.checkinData = res.data[0]
+                    }
+                )
+            axios.get('http://localhost:8000/api/getNoKamar')
+                .then(
+                    (response) => {
+                        console.log(response)
+                        this.noKamarData = response.data
+                    }
+                )
+                .catch(
+                    (error) => {
+                        console.log(error)
                     }
                 )
         },
@@ -310,6 +367,41 @@ export default {
                                             title: `Error Code ${status}`
                                         })
                                     }
+                                }
+                            )
+                    }
+                }
+            )
+        },
+        submitKamar(i) {
+            let noKamar = i.id_no_kamar
+            console.log(noKamar)
+            let data = {
+                id_transaksi: this.detailData.id_transaksi,
+                jumlah_kamar: this.detailData.jumlah_kamar,
+                no_kamar: this.noKamarData.no_kamar,
+                status: 'kosong'
+            }
+            swal({
+                icon: 'warning',
+                title: 'Choose this room?',
+                buttons: ['No', 'Yes']
+            }).then(
+                (next) => {
+                    if (next) {
+                        axios.put(`http://localhost:8000/api/chooseRoom/${i.no_kamar}`, data)
+                            .then(
+                                (response) => {
+                                    console.log(response)
+                                    const index = this.noKamarData.find(i => i.id_no_kamar === noKamar)
+                                    if (index) {
+                                        index.status = 'dipakai'
+                                    }
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Berhasil memilih kamar',
+                                        button: 'Ok'
+                                    })
                                 }
                             )
                     }
