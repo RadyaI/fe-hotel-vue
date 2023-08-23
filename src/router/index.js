@@ -15,6 +15,7 @@ import Login from '../views/Login.vue'
 import manageUser from '../views/admin/manageUser.vue'
 import manageRoom from '@/views/admin/manageRoom.vue'
 import feedback from '@/views/admin/feedback.vue'
+import roomNumber from '@/views/admin/roomNumber.vue'
 
 // Resepsionis
 import ResepConfirm from '../views/resepsionis/Confirm.vue'
@@ -68,6 +69,14 @@ const routes = [
   {
     path: '/admin/feedback',
     component: feedback,
+    meta: {
+      requiresAuth: true,
+      allowedRoles: ['admin']
+    }
+  },
+  {
+    path: '/roomnumber',
+    component: roomNumber,
     meta: {
       requiresAuth: true,
       allowedRoles: ['admin']

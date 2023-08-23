@@ -5,7 +5,7 @@
             <div class="container">
                 <nav class="navbar navbar-expand-lg navbar-light">
                     <!-- Brand and toggle get grouped for better mobile display -->
-                    <a class="navbar-brand logo_h" href="index.html"><img src="/image/Logo.png" alt=""></a>
+                    <a class="navbar-brand logo_h" href="index.html"><img src="image/Logo.png" alt=""></a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                         aria-label="Toggle navigation">
@@ -16,15 +16,18 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                         <ul class="nav navbar-nav menu_nav desktop-only">
+
                             <li class="nav-item"><router-link class="nav-link" to="/admin">Manage User</router-link>
                             </li>
                             <li class="nav-item"><router-link class="nav-link" to="/room">Manage Room</router-link>
                             </li>
-                            <li class="nav-item"><router-link class="nav-link" to="/roomnumber">Room Number</router-link>
+                            <li class="nav-item active"><router-link class="nav-link" to="/roomnumber">Room
+                                    Number</router-link>
                             </li>
-                            <li class="nav-item active"><router-link class="nav-link" to="/admin/feedback">FeedBack</router-link>
+                            <li class="nav-item"><router-link class="nav-link" to="/admin/feedback">FeedBack</router-link>
                             </li>
                             <li class="nav-item"><a class="nav-link" href="#" @click="logout">LogOut</a></li>
+
                         </ul>
                     </div>
                 </nav>
@@ -38,10 +41,10 @@
             </div>
             <div class="container">
                 <div class="page-cover text-center">
-                    <h2 class="page-cover-tittle">Feedback</h2>
+                    <h2 class="page-cover-tittle">Room Number</h2>
                     <ol class="breadcrumb" style="display: flex; justify-content: center;">
                         <li><a href="/admin">Home</a></li>
-                        <li class="active">Feedback</li>
+                        <li class="active">Room</li>
                     </ol>
                 </div>
             </div>
@@ -51,34 +54,22 @@
         <!--================Manage Area =================-->
         <div class="mt-5 mb-5">
             <div class="row mb-4" style="margin-left: 62px;">
+                <div class="col-auto">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addNumber"><i
+                            class="bi bi-file-plus"></i></button>
+                </div>
                 <div class="col-5">
-                    <input type="email" class="form-control" v-model="searchUser" placeholder="Search email...">
+                    <input type="number" class="form-control" v-model="searchUser" placeholder="Search room...">
                 </div>
             </div>
             <div class="container">
-
-                <div class="card">
-                    <div class="card-header">
-                        {{ this.totalFeedback }} Feedback
-                    </div>
-                    <div class="card-body">
-                        <!-- ISI -->
-                        <div class="card mb-4" v-for="i in filterData" :key="i.id_feedback">
-                            <div class="card-header">
-                                From <span style="color: blue; cursor: pointer;">{{ i.email }} <span style="color: black;">/
-                                        {{ i.tgl }}</span></span>
-                            </div>
-                            <div class="card-body">
-                                <p style="color: black;" class="card-text">{{ i.isi }} <br> <br>
-                                    <span style="font-weight:bold;" class="badge badge-success">{{ i.review }} / 5</span>
-                                </p>
-
-                            </div>
-                        </div>
-                        <!-- ISI -->
-                    </div>
-                </div>
-
+                <!-- Table -->
+                <button class="btn" style="margin:10px;"
+                    :class="{ 'btn-success': i.status === 'kosong', 'btn-danger': i.status === 'dipakai' }"
+                    v-for="i in numberData" :key="i.id_no_kamar">
+                    Nomor {{ i.no_kamar }}
+                </button>
+                <!-- Table End -->
             </div>
         </div>
         <!--================Manage Area =================-->
@@ -172,55 +163,95 @@
         </footer>
         <!--================ End footer Area  =================-->
 
+        <!-- MODAL ADD NOMOR -->
+        <div class="modal fade" id="addNumber" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Add Room Number</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form @submit.prevent="submitNumber">
+                        <div class="modal-body">
+
+                            <label for="nokamar" class="form-label">Nomor Kamar:</label>
+                            <input type="number" class="form-control" v-model="data.no_kamar" required
+                                placeholder="Masukkan nomor kamar...">
+
+                            <label for="lantai" class="form-label">Lantai:</label>
+                            <input type="number" class="form-control" v-model="data.lantai" required
+                                placeholder="Masukkan lantai kamar...">
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- MODAL ADD NOMOR END -->
+
     </div>
 </template>
 
 <script>
-import axios from 'axios';
 import swal from 'sweetalert';
-
+import axios from 'axios';
 
 export default {
-    name: 'app',
     data() {
         return {
-            feedbackData: {},
-            totalFeedback: '',
-            searchUser: '',
+            numberData: {},
+            data: {},
         }
     },
     computed: {
-        filterData() {
-            let filterData = this.feedbackData
-            if (this.searchUser) {
-                filterData = filterData.filter(i => i.email.toLowerCase().toString().includes(this.searchUser.toLowerCase))
-            }
-            return filterData
-        }
+
     },
     mounted() {
-        this.getFeedback()
+        this.getNumber()
     },
     methods: {
-        auth() {
-            // axios.defaults.headers.common['Accept'] = ''
+        getNumber() {
+            axios.get('http://localhost:8000/api/getAllNoKamar')
+                .then(
+                    (response) => {
+                        console.log(response)
+                        this.numberData = response.data
+                    }
+                )
         },
-        getFeedback() {
-            axios.defaults.headers.common['Authorization'] = 'Bearer' + localStorage.getItem('token')
-            axios.get('http://localhost:8000/api/getFeedback')
-                .then(
-                    (response) => {
-                        console.log(response)
-                        this.feedbackData = response.data
+        submitNumber() {
+            swal({
+                icon: 'warning',
+                title: 'Are You Sure?',
+                buttons: ['No', 'Yes']
+            }).then(
+                (go) => {
+                    if (go) {
+                        axios.post('http://localhost:8000/api/addNumber', this.data)
+                            .then(
+                                (response) => {
+                                    console.log(response)
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Berhasil Menambah nomor kamar',
+                                        timer: 1200
+                                    })
+                                    this.numberData.push(response.data.result)
+                                }
+                            )
+                            .catch(
+                                (error) => {
+                                    console.log(error)
+                                    alert(error.response.status)
+                                }
+                            )
                     }
-                )
-            axios.get('http://localhost:8000/api/countFeedback')
-                .then(
-                    (response) => {
-                        console.log(response)
-                        this.totalFeedback = response.data
-                    }
-                )
+                }
+            )
         },
         logout() {
             swal({

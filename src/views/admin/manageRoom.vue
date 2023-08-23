@@ -16,9 +16,14 @@
                     <!-- Collect the nav links, forms, and other content for toggling -->
                     <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                         <ul class="nav navbar-nav menu_nav desktop-only">
-                            <li class="nav-item"><a class="nav-link" href="/admin">Manage User</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/room">Manage Room</a></li>
-                            <li class="nav-item"><a class="nav-link" href="/admin/feedback">FeedBack</a></li>
+                            <li class="nav-item"><router-link class="nav-link" to="/admin">Manage User</router-link>
+                            </li>
+                            <li class="nav-item active"><router-link class="nav-link" to="/room">Manage Room</router-link>
+                            </li>
+                            <li class="nav-item"><router-link class="nav-link" to="/roomnumber">Room Number</router-link>
+                            </li>
+                            <li class="nav-item"><router-link class="nav-link" to="/admin/feedback">FeedBack</router-link>
+                            </li>
                             <li class="nav-item"><a class="nav-link" href="#" @click="logout">LogOut</a></li>
                         </ul>
                     </div>
@@ -323,6 +328,7 @@ import swal from 'sweetalert';
 
 
 export default {
+    name: 'app',
     data() {
         return {
             searchRoom: '',
