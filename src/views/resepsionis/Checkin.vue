@@ -226,7 +226,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="button" @click="checkIn">Check-In</button>
+                        <button type="submit" class="button" @click="checkIn" data-bs-dismiss="modal">Check-In</button>
                     </div>
                 </div>
             </div>
@@ -238,21 +238,28 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Choose a room</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Choose a {{ detailData.jumlah_kamar }} room</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
 
-                        <select class="form-control">
-                            <option value="">Pilih Lantai</option>
-                            <option value="1">Lantai 1</option>
-                            <option value="2">Lantai 2</option>
-                            <option value="3">Lantai 3</option>
-                        </select>
+                        <div class="row">
+                            <div class="col">
+                                <select class="form-control" v-model="searchLantai">
+                                    <option value="">Pilih Lantai</option>
+                                    <option value="1">Lantai 1</option>
+                                    <option value="2">Lantai 2</option>
+                                    <option value="3">Lantai 3</option>
+                                </select>
+                            </div>
+                            <div class="col">
+                                <input type="text" class="form-control" placeholder="Search Number" v-model="searchNumber">
+                            </div>
+                        </div>
 
                         <button class="btn btn-success"
                             :class="{ 'btn-success': i.status === 'kosong', 'btn-danger': i.status === 'dipakai' }"
-                            style="margin-left: 7px; margin-top:7px;" value="success" v-for="i in noKamarData"
+                            style="margin-left: 7px; margin-top:7px;" value="success" v-for="i in filterNomor"
                             :key="i.id_no_kamar" @click="submitKamar(i)">
                             {{ i.no_kamar }}
                         </button>
@@ -260,8 +267,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-toggle="modal"
                             data-bs-target="#confirmDetail">Back</button>
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#confirmDetail">Submit</button>
+
                     </div>
                 </div>
             </div>
@@ -277,14 +283,30 @@ import swal from 'sweetalert'
 // import swal from 'sweetalert'
 
 export default {
-    name: 'App',
+    name: 'app',
     data() {
         return {
             checkinData: {},
             detailData: {},
             nomorKamar: '',
 
+            searchNumber: '',
+            searchLantai: '',
+
             noKamarData: {}
+        }
+    },
+    computed: {
+        filterNomor() {
+            let filtered = this.noKamarData
+            if (this.searchLantai) {
+                filtered = filtered.filter(i => i.lantai.toString().toLowerCase().includes(this.searchLantai.toString().toLowerCase()))
+            }
+            if (this.searchNumber) {
+                filtered = filtered.filter(i => i.no_kamar.toString().includes(this.searchNumber.toString()))
+            }
+
+            return filtered
         }
     },
     mounted() {

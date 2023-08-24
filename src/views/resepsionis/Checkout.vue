@@ -18,7 +18,8 @@
                         <ul class="nav navbar-nav menu_nav desktop-only">
                             <li class="nav-item"><router-link to="/resepsionis" class="nav-link">Confirm</router-link></li>
                             <li class="nav-item"><router-link to="/checkin" class="nav-link">CheckIn</router-link></li>
-                            <li class="nav-item active"><router-link to="/checkout" class="nav-link">Checkout</router-link></li>
+                            <li class="nav-item active"><router-link to="/checkout" class="nav-link">Checkout</router-link>
+                            </li>
                             <li class="nav-item"><router-link to="/history" class="nav-link">History</router-link></li>
                             <li class="nav-item"><a class="nav-link" href="#" @click="logout">LogOut</a></li>
                         </ul>
@@ -43,10 +44,24 @@
         </section>
         <!--================Breadcrumb Area =================-->
 
+        <!--==========> Search Area <==========-->
+        <div class="kotak mt-3 ">
+            <input type="text" autocomplete="off" v-model="searchTamu" name="text" class="input"
+                placeholder="Search guest name...">
+            <!-- <button class="search__btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="22" height="22">
+                    <path
+                        d="M18.031 16.6168L22.3137 20.8995L20.8995 22.3137L16.6168 18.031C15.0769 19.263 13.124 20 11 20C6.032 20 2 15.968 2 11C2 6.032 6.032 2 11 2C15.968 2 20 6.032 20 11C20 13.124 19.263 15.0769 18.031 16.6168ZM16.0247 15.8748C17.2475 14.6146 18 12.8956 18 11C18 7.1325 14.8675 4 11 4C7.1325 4 4 7.1325 4 11C4 14.8675 7.1325 18 11 18C12.8956 18 14.6146 17.2475 15.8748 16.0247L16.0247 15.8748Z"
+                        fill="#efeff1"></path>
+                </svg>
+            </button> -->
+        </div>
+        <!--==========> Search Area <==========-->
+
         <!--===============> Ongoing data area <===============-->
         <section class="about_history_area section_gap" style="margin-top: -5pc;">
             <div class="container">
-                <div class="card mb-4" v-for="i in ongoingData" :key="i.id_transaksi">
+                <div class="card mb-4" v-for="i in filterData" :key="i.id_transaksi">
                     <div class="card-header">
                         Tanggal pesan / {{ i.tgl_pesan }}
                     </div>
@@ -205,7 +220,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="button" @click="checkOut">Check-Out</button>
+                        <button type="submit" class="button" @click="checkOut" data-bs-dismiss="modal">Check-Out</button>
                     </div>
                 </div>
             </div>
@@ -223,6 +238,8 @@ export default {
     name: 'App',
     data() {
         return {
+            searchTamu: '',
+
             ongoingData: {},
             detailData: {},
             nomorKamar: ''
@@ -230,6 +247,15 @@ export default {
     },
     mounted() {
         this.getOngoing()
+    },
+    computed: {
+        filterData() {
+            let filtered = this.ongoingData
+            if (this.searchTamu) {
+                filtered = filtered.filter(i => i.nama_tamu.toString().toLowerCase().includes(this.searchTamu.toString().toLowerCase()))
+            }
+            return filtered
+        }
     },
     methods: {
         getOngoing() {
@@ -273,7 +299,7 @@ export default {
                                     }).then(
                                         (close) => {
                                             if (close) {
-                                                location.reload()
+                                                console.log('berhasil checkout')
                                             }
                                         }
                                     )
@@ -358,6 +384,58 @@ export default {
     .button:active {
         transform: translate(0.05em, 0.05em);
         box-shadow: 0.05em 0.05em;
+    }
+
+    .kotak {
+        display: flex;
+        margin-left: 100px;
+        align-items: center;
+        height: 35px;
+    }
+
+    .input {
+        max-width: 190px;
+        height: 100%;
+        outline: none;
+        font-size: 14px;
+        font-weight: 500;
+        background-color: #53535f;
+        caret-color: #f7f7f8;
+        color: #fff;
+        padding: 7px 10px;
+        border: 2px solid transparent;
+        border-top-left-radius: 7px;
+        border-top-right-radius: 7px;
+        border-bottom-right-radius: 7px;
+        border-bottom-left-radius: 7px;
+        margin-right: 1px;
+        transition: all .2s ease;
+    }
+
+    .input:hover {
+        border: 2px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .input:focus {
+        border: 2px solid #a970ff;
+        background-color: #0e0e10;
+    }
+
+    .search__btn {
+        border: none;
+        cursor: pointer;
+        background-color: rgba(42, 42, 45, 1);
+        border-top-right-radius: 7px;
+        border-bottom-right-radius: 7px;
+        height: 100%;
+        width: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .search__btn:hover {
+        background-color: rgba(54, 54, 56, 1);
     }
 
 }
