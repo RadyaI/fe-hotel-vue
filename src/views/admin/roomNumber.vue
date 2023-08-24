@@ -59,14 +59,22 @@
                             class="bi bi-file-plus"></i></button>
                 </div>
                 <div class="col-5">
-                    <input type="number" class="form-control" v-model="searchUser" placeholder="Search room...">
+                    <input type="number" class="form-control" v-model="searchNumber" placeholder="Search room...">
+                </div>
+                <div class="col-5">
+                    <select class="form-control" v-model="searchLantai">
+                        <option value="" selected>Semua Lantai</option>
+                        <option value="1">Lantai 1</option>
+                        <option value="2">Lantai 2</option>
+                    </select>
                 </div>
             </div>
             <div class="container">
                 <!-- Table -->
-                <button class="btn" style="margin:10px;"
+                <button @click="selectNumber(i)" data-bs-toggle="modal" data-bs-target="#openSelectNumber" class="btn"
+                    style="margin:10px;"
                     :class="{ 'btn-success': i.status === 'kosong', 'btn-danger': i.status === 'dipakai' }"
-                    v-for="i in numberData" :key="i.id_no_kamar">
+                    v-for="i in filterRoom" :key="i.id_no_kamar">
                     Nomor {{ i.no_kamar }}
                 </button>
                 <!-- Table End -->
@@ -193,6 +201,44 @@
         </div>
         <!-- MODAL ADD NOMOR END -->
 
+        <!-- MODAL ADD NOMOR -->
+        <div class="modal fade" id="openSelectNumber" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Edit Room Number</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form @submit.prevent="saveNumber">
+                        <div class="modal-body">
+
+                            <label for="nokamar" class="form-label">Nomor Kamar:</label>
+                            <input type="number" class="form-control" v-model="detail.no_kamar" required
+                                placeholder="Masukkan nomor kamar...">
+
+                            <label for="lantai" class="form-label">Lantai:</label>
+                            <input type="number" class="form-control" v-model="detail.lantai" required
+                                placeholder="Masukkan lantai kamar...">
+
+                            <label for="status" class="form-label">Status:</label>
+                            <select class="form-control" v-model="detail.status">
+                                <option value="kosong">Kosong</option>
+                                <option value="dipakai">Di Pakai</option>
+                            </select>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" @click="deleteRoom"
+                                data-bs-dismiss="modal">Delete</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- MODAL ADD NOMOR END -->
+
     </div>
 </template>
 
@@ -203,12 +249,27 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            searchLantai: '',
+            searchNumber: '',
+
             numberData: {},
             data: {},
+            detail: {}
         }
     },
     computed: {
+        filterRoom() {
+            let numberData = this.numberData
+            if (this.searchNumber) {
+                numberData = numberData.filter(i => i.no_kamar.toString().includes(this.searchNumber.toString()))
+            }
 
+            if (this.searchLantai) {
+                numberData = numberData.filter(i => i.lantai.toString().toLowerCase().includes(this.searchLantai.toString().toLowerCase()))
+            }
+
+            return numberData
+        }
     },
     mounted() {
         this.getNumber()
@@ -220,6 +281,15 @@ export default {
                     (response) => {
                         console.log(response)
                         this.numberData = response.data
+                    }
+                )
+        },
+        selectNumber(i) {
+            axios.get(`http://localhost:8000/api/selectKamar/${i.id_no_kamar}`)
+                .then(
+                    (response) => {
+                        console.log(response)
+                        this.detail = response.data[0]
                     }
                 )
         },
@@ -246,7 +316,75 @@ export default {
                             .catch(
                                 (error) => {
                                     console.log(error)
-                                    alert(error.response.status)
+                                    swal({
+                                        icon: 'error',
+                                        title: 'Nomor kamar sudah ada!',
+                                        timer: 1000,
+                                        button: false
+                                    })
+                                }
+                            )
+                    }
+                }
+            )
+        },
+        saveNumber() {
+            swal({
+                icon: 'warning',
+                title: 'Are You Sure?',
+                dangerMode: true,
+                buttons: ['No', 'Yes']
+            }).then(
+                (i) => {
+                    if (i) {
+                        axios.put(`http://localhost:8000/api/updateKamar/${this.detail.id_no_kamar}`, this.detail)
+                            .then(
+                                (response) => {
+                                    console.log(response)
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Berhasil udah kamar',
+                                        button: false,
+                                        timer: 1200
+                                    })
+                                    const index = this.numberData.findIndex(s => s.id_no_kamar === this.detail.id_no_kamar)
+                                    this.numberData.splice(index, 1, this.detail)
+                                }
+                            )
+                            .catch(
+                                (error) => {
+                                    console.log(error)
+                                }
+                            )
+                    }
+                }
+            )
+        },
+        deleteRoom() {
+            swal({
+                icon: 'warning',
+                title: 'Are You Sure?',
+                dangerMode: true,
+                buttons: ['No', 'Yes']
+            }).then(
+                (hapus) => {
+                    if (hapus) {
+                        axios.delete(`http://localhost:8000/api/deleteRoom/${this.detail.id_no_kamar}`)
+                            .then(
+                                (response) => {
+                                    console.log(response)
+                                    swal({
+                                        icon: 'success',
+                                        title: 'Berhasil hapus nomor kamar',
+                                        timer: 1200,
+                                        button: false
+                                    })
+                                    this.numberData = this.numberData.filter(i => i.id_no_kamar != this.detail.id_no_kamar)
+                                }
+                            )
+                            .catch(
+                                (error) => {
+                                    console.log(error)
                                 }
                             )
                     }

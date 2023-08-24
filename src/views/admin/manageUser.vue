@@ -336,6 +336,25 @@ export default {
                         this.userData = response.data
                     }
                 )
+                .catch(
+                    (error) => {
+                        console.log(error)
+                        if (error.response.status == 401) {
+                            swal({
+                                icon: 'warning',
+                                title: `Token is Expired`,
+                                button: 'Login',
+                                dangerMode: true,
+                            }).then(
+                                (login) => {
+                                    if (login) {
+                                        location.href = '/login'
+                                    }
+                                }
+                            )
+                        }
+                    }
+                )
         },
         getDetail(i) {
             axios.get(`http://localhost:8000/api/getUser/${i.id}`)

@@ -385,7 +385,8 @@ export default {
             swal({
                 icon: 'warning',
                 title: 'Choose this room?',
-                buttons: ['No', 'Yes']
+                buttons: ['No', 'Yes'],
+                dangerMode: true
             }).then(
                 (next) => {
                     if (next) {
