@@ -2,26 +2,31 @@
     <div>
         <div>
             <div class="form-container" style=" position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-                <p class="title">Login</p>
-                <form class="form" @submit.prevent="signIn">
+                <p class="title">Create Account</p>
+                <form class="form" @submit.prevent="signUpNow">
+                    <div class="input-group">
+                        <label for="username">Name</label>
+                        <input type="text" v-model="signUp.name" required autocomplete="off" name="username" id="username"
+                            placeholder="">
+                    </div>
                     <div class="input-group">
                         <label for="username">Email</label>
-                        <input type="email" v-model="login.email" required autocomplete="off" name="username" id="username"
+                        <input type="email" v-model="signUp.email" required autocomplete="off" name="username" id="username"
                             placeholder="">
                     </div>
                     <div class="input-group">
                         <label for="password">Password</label>
-                        <input type="password" v-model="login.password" required name="password" id="password"
+                        <input type="password" v-model="signUp.password" required name="password" id="password"
                             placeholder="">
                         <div class="forgot">
                             <a rel="noopener noreferrer" href="#">Forgot Password ?</a>
                         </div>
                     </div>
-                    <button type="submit" class="sign">Sign in</button>
+                    <button type="submit" class="sign">Sign Up</button>
                 </form>
                 <br>
-                <p class="signup">Don't have an account?
-                    <router-link to="/signUp">Create</router-link>
+                <p class="signup">Already have an account?
+                    <router-link to="/login">Login</router-link>
                 </p>
             </div>
         </div>
@@ -29,63 +34,51 @@
 </template>
 
 <script>
-import axios from 'axios';
-import swal from 'sweetalert';
 
-// import axios from 'axios'
-// import swal from 'sweetalert'
+import axios from 'axios'
+import swal from 'sweetalert'
 
 export default {
     name: 'App',
     data() {
         return {
-            login: {
+            signUp: {
+                name: '',
                 email: '',
                 password: ''
             }
         }
     },
     methods: {
-        signIn() {
-            let login = {
-                email: this.login.email,
-                password: this.login.password
-            }
-            axios.post('http://localhost:8000/api/login', login)
-                .then(
-                    (response) => {
-                        console.log(response)
-                        localStorage.setItem('id', response.data.id)
-                        localStorage.setItem('role', response.data.level)
-                        localStorage.setItem('token', response.data.token)
-                        localStorage.setItem('nama', response.data.nama)
-                        swal({
-                            icon: 'success',
-                            button: false
-                        })
-                        setTimeout(() => {
-                            if (response.data.level === "resepsionis") {
-                                location.href = '/resepsionis'
-                            } else if (response.data.level === "admin") {
-                                location.href = '/admin'
-                            } else if (response.data.level === 'tamu'){
-                                location.href = '/'
-                            }
-                        }, 1100);
+        signUpNow() {
+            swal({
+                icon: 'warning',
+                title: 'Data Sudah Benar?',
+                dangerMode: true,
+                buttons: ['Belum', 'Sudah']
+            }).then(
+                (lanjut) => {
+                    if (lanjut) {
+                        axios.post('http://localhost:8000/api/register', this.signUp)
+                            .then(
+                                (response) => {
+                                    console.log(response)
+                                    localStorage.setItem('token',response.data.token)
+                                    localStorage.setItem('name',response.data.user.name)
+                                    localStorage.setItem('id_user',response.data.user.id)
+                                    localStorage.setItem('role',response.data.user.level)
+                                    localStorage.setItem('email',response.data.user.email)
+                                    location.href = '/'
+                                }
+                            )
+                            .catch(
+                                (error) => {
+                                    console.log(error)
+                                }
+                            )
                     }
-                )
-                .catch(
-                    (error) => {
-                        console.log(error)
-                        if (error.response.status === 400) {
-                            let title = error.response.data.error
-                            swal({
-                                icon: 'error',
-                                title: `${title}`
-                            })
-                        }
-                    }
-                )
+                }
+            )
         }
     }
 }

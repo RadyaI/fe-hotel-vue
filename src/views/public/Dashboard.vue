@@ -43,8 +43,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                             <li class="nav-item active"><router-link to="/" class="nav-link">Home</router-link></li>
                             <li class="nav-item"><router-link to="/check" class="nav-link">Check Booking</router-link></li>
                             <li class="nav-item"><router-link to="/feedback" class="nav-link">Feedback</router-link></li>
-                            <li class="nav-item"><router-link to="/login" class="nav-link">Login</router-link></li>
-                            <li class="nav-item"><router-link to="/history/user" class="nav-link">History</router-link></li>
+                            <li class="nav-item" v-if="role === 'tamu'" @click="keluar"><router-link to=""
+                                    class="nav-link">LogOut</router-link></li>
+                            <li class="nav-item" v-else><router-link to="/login" class="nav-link">Login</router-link></li>
+                            <li class="nav-item" @click="checkHistory"><router-link to=""
+                                    class="nav-link">History</router-link></li>
 
                         </ul>
                     </div>
@@ -64,7 +67,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                         <h2>Relax Your Mind</h2>
                         <p>If you are looking at blank cassettes on the web, you may be very confused at the<br> difference
                             in price. You may see some for as low as $.17 each.</p>
-                        
+
                     </div>
                 </div>
             </div>
@@ -132,7 +135,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
             <div class="container">
                 <div class="section_title text-center">
                     <h2 class="title_color">Hotel Room</h2>
-                    <p class="text-dark">We all live in an age that belongs to the young at heart. Life that is becoming extremely fast, </p>
+                    <p class="text-dark">We all live in an age that belongs to the young at heart. Life that is becoming
+                        extremely fast, </p>
                 </div>
                 <div class="row mb_30">
                     <div class="col-lg-3 col-sm-6" v-for="room in roomData" :key="room.id_kamar">
@@ -461,7 +465,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     <p class="col-lg-8 col-sm-12 footer-text m-0">
                         <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                         Copyright &copy; 2023 All rights reserved | made with <i class="fa fa-heart-o"
-                            aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> redesign by radya with tears
+                            aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a> redesign
+                        by radya with tears
                         <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                     </p>
                     <div class="col-lg-4 col-sm-12 footer-social">
@@ -554,7 +559,7 @@ export default {
     data() {
         return {
             id: localStorage.getItem('id'),
-
+            role: localStorage.getItem('role'),
             roomData: {},
             bookData: {
                 jumlah_kamar: 0,
@@ -570,6 +575,7 @@ export default {
     },
     mounted() {
         // this.getRoom()
+        console.log(this.role)
     },
     computed: {
 
@@ -667,6 +673,51 @@ export default {
                                     }
                                 }
                             )
+                    }
+                }
+            )
+        },
+        checkHistory() {
+            if (this.role == 'tamu') {
+                this.$router.push = '/history/user'
+            } else {
+                swal({
+                    icon: 'error',
+                    title: 'Login Dulu',
+                    buttons: ['close', 'login']
+                }).then(
+                    (next) => {
+                        if (next) {
+                           location.href = '/login'
+                        }
+                    }
+                )
+            }
+        },
+        keluar() {
+            swal({
+                icon: 'warning',
+                title: 'Are you sure?',
+                dangerMode: true,
+                buttons: ['No', 'Yes']
+            }).then(
+                (yes) => {
+                    if (yes) {
+                        localStorage.clear()
+                        swal({
+                            icon: 'success',
+                            title: 'LogOut successfully',
+                            dangerMode: true,
+                            buttons: ['Close', 'Login']
+                        }).then(
+                            (login) => {
+                                if (login) {
+                                    location.href = '/login'
+                                } else {
+                                    location.reload()
+                                }
+                            }
+                        )
                     }
                 }
             )

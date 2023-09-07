@@ -22,7 +22,8 @@
                             </li>
                             <li class="nav-item"><router-link class="nav-link" to="/roomnumber">Room Number</router-link>
                             </li>
-                            <li class="nav-item active"><router-link class="nav-link" to="/admin/feedback">FeedBack</router-link>
+                            <li class="nav-item active"><router-link class="nav-link"
+                                    to="/admin/feedback">FeedBack</router-link>
                             </li>
                             <li class="nav-item"><a class="nav-link" href="#" @click="logout">LogOut</a></li>
                         </ul>
@@ -65,7 +66,9 @@
                         <!-- ISI -->
                         <div class="card mb-4" v-for="i in filterData" :key="i.id_feedback">
                             <div class="card-header">
-                                From <span style="color: blue; cursor: pointer;">{{ i.email }} <span style="color: black;">/
+                                From <span style="color: blue; cursor: pointer;" @click="getDetailFeedback(i)"
+                                    data-bs-toggle="modal" data-bs-target="#sendFeedback">{{ i.email }} <span
+                                        style="color: black;">/
                                         {{ i.tgl }}</span></span>
                             </div>
                             <div class="card-body">
@@ -172,6 +175,40 @@
         </footer>
         <!--================ End footer Area  =================-->
 
+        <!-- Send Feedback Modal -->
+        <div class="modal fade" id="sendFeedback" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">Send Feedback</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form @submit.prevent=sendFeedbackToUser>
+                        <div class="modal-body">
+
+                            <label for="email">Email: </label>
+                            <input type="email" class="form-control" readonly v-model="feedbackDetail.email">
+
+                            <label for="feedback">Feedback: </label>
+                            <textarea class="form-control" readonly v-model="feedbackDetail.isi" cols="10"
+                                rows="3"></textarea>
+
+                            <label for="balasan">Balasan: </label>
+                            <textarea class="form-control" v-model="sendFeedback.balasan" required cols="10"
+                                rows="3"></textarea>
+
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Send Feedback Modal End -->
+
     </div>
 </template>
 
@@ -184,7 +221,9 @@ export default {
     name: 'app',
     data() {
         return {
+            sendFeedback: {},
             feedbackData: {},
+            feedbackDetail: {},
             totalFeedback: '',
             searchUser: '',
         }
@@ -204,6 +243,59 @@ export default {
     methods: {
         auth() {
             // axios.defaults.headers.common['Accept'] = ''
+        },
+        sendFeedbackToUser() {
+            let data = {
+                'id_transaksi': this.feedbackDetail.id_transaksi,
+                'email': this.feedbackDetail.email,
+                'balasan': this.sendFeedback.balasan
+            }
+            axios.defaults.headers.common['Authorization'] = 'Bearer' + localStorage.getItem('token')
+            swal({
+                icon: 'warning',
+                title: 'Are you sure?',
+                buttons: ['No', 'Yes'],
+                dangerMode: true
+            })
+                .then(
+                    (send) => {
+                        if (send) {
+                            swal({
+                                title: 'Wait',
+                                button: false
+                            })
+                            axios.post('http://localhost:8000/api/sendFeedbackToUser', data)
+                                .then(
+                                    (response) => {
+                                        console.log(response)
+                                        swal({
+                                            icon: 'success',
+                                            title: 'Berhasil mengirim email',
+                                            button: 'Ok'
+                                        })
+                                    }
+                                )
+                                .catch(
+                                    (error) => {
+                                        console.log(error)
+                                        swal({
+                                            icon: 'error'
+                                        })
+                                    }
+                                )
+                        }
+                    }
+                )
+        },
+        getDetailFeedback(i) {
+            axios.defaults.headers.common['Authorization'] = 'Bearer' + localStorage.getItem('token')
+            axios.get(`http://localhost:8000/api/selectFeedback/${i.id_feedback}`)
+                .then(
+                    (response) => {
+                        console.log(response)
+                        this.feedbackDetail = response.data[0]
+                    }
+                )
         },
         getFeedback() {
             axios.defaults.headers.common['Authorization'] = 'Bearer' + localStorage.getItem('token')

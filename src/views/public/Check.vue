@@ -83,8 +83,11 @@ p {
                             <li class="nav-item"><router-link to="/" class="nav-link">Home</router-link></li>
                             <li class="nav-item active"><router-link to="/check" class="nav-link">Check Booking</router-link></li>
                             <li class="nav-item"><router-link to="/feedback" class="nav-link">Feedback</router-link></li>
-                            <li class="nav-item"><router-link to="/login/user" class="nav-link">Login</router-link></li>
+                            <li class="nav-item" v-if="role === 'tamu'"><router-link
+                                   to="" class="nav-link">LogOut</router-link></li>
+                            <li class="nav-item" v-else><router-link to="/login" class="nav-link">Login</router-link></li>
                             <li class="nav-item"><router-link to="/history/user" class="nav-link">History</router-link></li>
+
                         </ul>
                     </div>
                 </nav>
@@ -236,6 +239,7 @@ export default {
     name: 'App',
     data() {
         return {
+            role: localStorage.getItem('role'),
             id_transaksi: '',
             bookingData: {}
         }

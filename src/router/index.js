@@ -9,7 +9,9 @@ import Feedback from '../views/public/Feedback.vue'
 import Notfound from '../views/idk_page/Notfound.vue'
 import unauthorized from '../views/idk_page/unauthorized.vue'
 import Print from '../views/public/Print.vue'
+
 import Login from '../views/Login.vue'
+import signUp from '../views/signUp.vue'
 
 // Admin
 import manageUser from '../views/admin/manageUser.vue'
@@ -46,6 +48,10 @@ const routes = [
   {
     path: '/login',
     component: Login
+  },
+  {
+    path: '/signUp',
+    component: signUp
   },
   // =======> Public Route End <=======
 
