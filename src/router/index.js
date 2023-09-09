@@ -6,6 +6,7 @@ import Tes from '../views/Tes.vue'
 import DashboardPublic from '../views/public/Dashboard.vue'
 import Check from '../views/public/Check.vue'
 import Feedback from '../views/public/Feedback.vue'
+import userHistory from '../views/public/userHistory.vue'
 import Notfound from '../views/idk_page/Notfound.vue'
 import unauthorized from '../views/idk_page/unauthorized.vue'
 import Print from '../views/public/Print.vue'
@@ -40,6 +41,10 @@ const routes = [
   {
     path: '/feedback',
     component: Feedback
+  },
+  {
+    path: '/history/user',
+    component: userHistory
   },
   {
     path: '/print/:nama',

@@ -83,11 +83,11 @@ p {
                             <li class="nav-item"><router-link to="/" class="nav-link">Home</router-link></li>
                             <li class="nav-item active"><router-link to="/check" class="nav-link">Check Booking</router-link></li>
                             <li class="nav-item"><router-link to="/feedback" class="nav-link">Feedback</router-link></li>
-                            <li class="nav-item" v-if="role === 'tamu'"><router-link
+                            <li class="nav-item" @click="keluar" v-if="role === 'tamu'"><router-link
                                    to="" class="nav-link">LogOut</router-link></li>
                             <li class="nav-item" v-else><router-link to="/login" class="nav-link">Login</router-link></li>
-                            <li class="nav-item"><router-link to="/history/user" class="nav-link">History</router-link></li>
-
+                            <li class="nav-item" @click="checkHistory"><router-link to=""
+                                    class="nav-link">History</router-link></li>
                         </ul>
                     </div>
                 </nav>
@@ -282,6 +282,51 @@ export default {
                     )
             }
 
+        },
+        checkHistory() {
+            if (this.role == 'tamu') {
+                this.$router.push('/history/user')
+            } else {
+                swal({
+                    icon: 'error',
+                    title: 'Login Dulu',
+                    buttons: ['close', 'login']
+                }).then(
+                    (next) => {
+                        if (next) {
+                           location.href = '/login'
+                        }
+                    }
+                )
+            }
+        },
+        keluar() {
+            swal({
+                icon: 'warning',
+                title: 'Are you sure?',
+                dangerMode: true,
+                buttons: ['No', 'Yes']
+            }).then(
+                (yes) => {
+                    if (yes) {
+                        localStorage.clear()
+                        swal({
+                            icon: 'success',
+                            title: 'LogOut successfully',
+                            dangerMode: true,
+                            buttons: ['Close', 'Login']
+                        }).then(
+                            (login) => {
+                                if (login) {
+                                    location.href = '/login'
+                                } else {
+                                    location.reload()
+                                }
+                            }
+                        )
+                    }
+                }
+            )
         }
     }
 }

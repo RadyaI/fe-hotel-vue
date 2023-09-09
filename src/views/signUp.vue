@@ -63,17 +63,23 @@ export default {
                             .then(
                                 (response) => {
                                     console.log(response)
-                                    localStorage.setItem('token',response.data.token)
-                                    localStorage.setItem('name',response.data.user.name)
-                                    localStorage.setItem('id_user',response.data.user.id)
-                                    localStorage.setItem('role',response.data.user.level)
-                                    localStorage.setItem('email',response.data.user.email)
+                                    localStorage.setItem('token', response.data.token)
+                                    localStorage.setItem('nama', response.data.user.name)
+                                    localStorage.setItem('id', response.data.user.id)
+                                    localStorage.setItem('role', response.data.user.level)
+                                    localStorage.setItem('email', response.data.user.email)
                                     location.href = '/'
                                 }
                             )
                             .catch(
                                 (error) => {
                                     console.log(error)
+                                    if (error.response.status === 400) {
+                                        swal({
+                                            icon: 'error',
+                                            title: `${error.response.data}`
+                                        })
+                                    }
                                 }
                             )
                     }

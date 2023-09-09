@@ -300,6 +300,7 @@ export default {
                                         (close) => {
                                             if (close) {
                                                 console.log('berhasil checkout')
+                                                this.ongoingData = this.ongoingData.filter(i => i.id_transaksi != this.detailData.id_transaksi)
                                             }
                                         }
                                     )

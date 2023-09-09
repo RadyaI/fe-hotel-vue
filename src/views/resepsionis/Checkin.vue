@@ -368,7 +368,7 @@ export default {
                                     }).then(
                                         (close) => {
                                             if (close) {
-                                                location.reload()
+                                                this.checkinData = this.checkinData.filter(i => i.id_transaksi != this.detailData.id_transaksi)
                                             }
                                         }
                                     )

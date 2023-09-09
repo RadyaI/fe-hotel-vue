@@ -59,6 +59,7 @@ export default {
                         localStorage.setItem('role', response.data.level)
                         localStorage.setItem('token', response.data.token)
                         localStorage.setItem('nama', response.data.nama)
+                        localStorage.setItem('email', response.data.email)
                         swal({
                             icon: 'success',
                             button: false

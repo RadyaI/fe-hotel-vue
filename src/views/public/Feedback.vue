@@ -116,12 +116,13 @@ a {
                         <ul class="nav navbar-nav menu_nav desktop-only">
                             <li class="nav-item"><router-link to="/" class="nav-link">Home</router-link></li>
                             <li class="nav-item"><router-link to="/check" class="nav-link">Check Booking</router-link></li>
-                            <li class="nav-item active"><router-link to="/feedback" class="nav-link">Feedback</router-link></li>
-                            <li class="nav-item" v-if="role === 'tamu'"><router-link
-                                   to="" class="nav-link">LogOut</router-link></li>
+                            <li class="nav-item active"><router-link to="/feedback" class="nav-link">Feedback</router-link>
+                            </li>
+                            <li class="nav-item" @click="keluar" v-if="role === 'tamu'"><router-link to=""
+                                    class="nav-link">LogOut</router-link></li>
                             <li class="nav-item" v-else><router-link to="/login" class="nav-link">Login</router-link></li>
-                            <li class="nav-item"><router-link to="/history/user" class="nav-link">History</router-link></li>
-
+                            <li class="nav-item" @click="checkHistory"><router-link to=""
+                                    class="nav-link">History</router-link></li>
                         </ul>
                     </div>
                 </nav>
@@ -175,8 +176,8 @@ a {
                                         name="name" placeholder="Enter your ID Transaksi" autocomplete="off" required>
                                 </div>
                                 <div class="form-group">
-                                    <input type="email" v-model="feedback.email" class="form-control" id="email" name="email"
-                                        placeholder="Enter email address" autocomplete="off" required>
+                                    <input type="email" v-model="feedback.email" class="form-control" id="email"
+                                        name="email" placeholder="Enter email address" autocomplete="off" required>
                                 </div>
                                 <!--=====> RATING <=====-->
                                 <div class="rating mt-3" style="margin-right:100px;">
@@ -307,9 +308,54 @@ export default {
                                             icon: 'error',
                                             title: 'You already send 2 feedback!'
                                         })
-                                    }
+                                    }   
                                 }
                             )
+                    }
+                }
+            )
+        },
+        checkHistory() {
+            if (this.role == 'tamu') {
+                this.$router.push('/history/user')
+            } else {
+                swal({
+                    icon: 'error',
+                    title: 'Login Dulu',
+                    buttons: ['close', 'login']
+                }).then(
+                    (next) => {
+                        if (next) {
+                            location.href = '/login'
+                        }
+                    }
+                )
+            }
+        },
+        keluar() {
+            swal({
+                icon: 'warning',
+                title: 'Are you sure?',
+                dangerMode: true,
+                buttons: ['No', 'Yes']
+            }).then(
+                (yes) => {
+                    if (yes) {
+                        localStorage.clear()
+                        swal({
+                            icon: 'success',
+                            title: 'LogOut successfully',
+                            dangerMode: true,
+                            buttons: ['Close', 'Login']
+                        }).then(
+                            (login) => {
+                                if (login) {
+                                    location.href = '/login'
+                                } else {
+                                    location.reload()
+                                }
+                            }
+                        )
                     }
                 }
             )

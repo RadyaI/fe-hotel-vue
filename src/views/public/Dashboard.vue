@@ -63,7 +63,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                     data-background=""></div>
                 <div class="container">
                     <div class="banner_content text-center">
-                        <h6>Away from monotonous life</h6>
+                        <h6>HI {{ login_namaTamu }}</h6>
                         <h2>Relax Your Mind</h2>
                         <p>If you are looking at blank cassettes on the web, you may be very confused at the<br> difference
                             in price. You may see some for as low as $.17 each.</p>
@@ -504,6 +504,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
                                     <label for="email">Email: </label>
                                     <input type="email" v-model="bookData.email" autocomplete="off" class="form-control"
                                         required placeholder="Masukkan email...">
+                                    <!-- <small>Gunakan email login?<span class="text-primary" style="cursor: pointer;"
+                                            @click="useEmail">iya</span></small> <br> -->
 
                                     <label for="name">Nama: </label>
                                     <input type="text" v-model="bookData.nama_tamu" class="form-control"
@@ -558,12 +560,14 @@ export default {
     name: 'app',
     data() {
         return {
+            login_namaTamu: localStorage.getItem('nama'),
             id: localStorage.getItem('id'),
             role: localStorage.getItem('role'),
             roomData: {},
             bookData: {
                 jumlah_kamar: 0,
                 harga: 0,
+                email: localStorage.getItem('email')
             },
             roomDetail: {},
             filter: {
@@ -581,6 +585,10 @@ export default {
 
     },
     methods: {
+        useEmail() {
+            this.bookData.email = localStorage.getItem('email')
+            console.log(localStorage.getItem('email'))
+        },
         goBookYourRoom() {
             this.$refs.bookingKamar.scrollIntoView({ behavior: 'smooth' })
         },
@@ -679,7 +687,7 @@ export default {
         },
         checkHistory() {
             if (this.role == 'tamu') {
-                this.$router.push = '/history/user'
+                this.$router.push('/history/user')
             } else {
                 swal({
                     icon: 'error',
@@ -688,7 +696,7 @@ export default {
                 }).then(
                     (next) => {
                         if (next) {
-                           location.href = '/login'
+                            location.href = '/login'
                         }
                     }
                 )
