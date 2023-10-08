@@ -1,11 +1,11 @@
 <template>
     <div>
         <nav>
-            <h1 class="cihuy" style="font-family:'Times New Roman';">Wikusama <span class="hidden">Hotel</span></h1>
-            <h5 class="alamat">Hotel Wikusama by Radya</h5>
-            <p class="alamat1">Jalan merah, Planet Mars, Galaxy Bimasakti</p>
-            <p class="alamat2">08771624815, WikusamaHotel@gmail.com</p>
-            <p class="alamat3">www.Wikusama.com</p>
+            <h1 class="cihuy" style="font-family:'Times New Roman';">Royal <span class="hidden">Hotel</span></h1>
+            <h5 class="alamat">Hotel royal by Radya</h5>
+            <p class="alamat1">Malang, Indonesia</p>
+            <p class="alamat2">08771624815, royal@gmail.com</p>
+            <p class="alamat3">www.royalhotel.com</p>
         </nav>
         <h3 class="print" style="position: absolute; left: 42%; top: 23%;">Booking Detail</h3>
         <table class="table1">
@@ -105,6 +105,7 @@ export default {
 
 <style>
 @media print {
+
     .print {
         display: none;
     }
@@ -114,7 +115,7 @@ export default {
     }
 
     .table1{
-        margin-top: 100px;
+        margin-top: 300px;
     }
 }
 
@@ -124,7 +125,7 @@ export default {
 
 .table1 {
     margin-left: 15%;
-    margin-top: 18%;
+    margin-top: 200px;
 }
 
 .cihuy {

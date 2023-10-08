@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div>
+        <div class="background">
             <div class="form-container" style=" position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
                 <p class="title">Login</p>
                 <form class="form" @submit.prevent="signIn">
@@ -14,10 +14,10 @@
                         <input type="password" v-model="login.password" required name="password" id="password"
                             placeholder="">
                         <div class="forgot">
-                            <a rel="noopener noreferrer" href="#">Forgot Password ?</a>
+                            <!-- <a rel="noopener noreferrer" href="#">Forgot Password ?</a> -->
                         </div>
                     </div>
-                    <button type="submit" class="sign">Sign in</button>
+                    <button type="submit" class="sign mt-3">Sign in</button>
                 </form>
                 <br>
                 <p class="signup">Don't have an account?
@@ -69,7 +69,7 @@ export default {
                                 location.href = '/resepsionis'
                             } else if (response.data.level === "admin") {
                                 location.href = '/admin'
-                            } else if (response.data.level === 'tamu'){
+                            } else if (response.data.level === 'tamu') {
                                 location.href = '/'
                             }
                         }, 1100);
@@ -93,6 +93,25 @@ export default {
 </script>
 
 <style scoped>
+.background {
+    /* Menetapkan gambar sebagai latar belakang */
+    background-image: url('loginBG.jpg');
+    /* Ganti dengan path gambar Anda */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    /* Atur gaya lainnya sesuai kebutuhan Anda */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    /* Untuk menjadikan latar belakang berada di belakang konten */
+    opacity: 1;
+    /* Opsional: atur opasitas gambar latar belakang */
+}
+
 .form-container {
     width: 320px;
     border-radius: 0.75rem;
@@ -215,5 +234,4 @@ export default {
     font-size: 0.75rem;
     line-height: 1rem;
     color: rgba(156, 163, 175, 1);
-}
-</style>
+}</style>
